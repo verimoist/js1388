@@ -1,23 +1,42 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import { SITE } from "../lib/site";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '<<회사명>> - 공공기관 홈페이지',
-  description: '<<회사명>>은 지역사회 발전과 시민 복지 향상을 위해 노력하는 공공기관입니다.',
-  keywords: '공공기관, 복지, 상담, 교육, 지역사회',
-  authors: [{ name: '<<회사명>>' }],
-  openGraph: {
-    title: '<<회사명>> - 공공기관 홈페이지',
-    description: '<<회사명>>은 지역사회 발전과 시민 복지 향상을 위해 노력하는 공공기관입니다.',
-    type: 'website',
-    locale: 'ko_KR',
+  metadataBase: new URL("https://js1388.vercel.app"),
+  title: {
+    default: `${SITE.name}`,
+    template: `%s - ${SITE.name}`,
   },
-}
+  description: SITE.description,
+  openGraph: {
+    type: "website",
+    url: "https://js1388.vercel.app",
+    siteName: SITE.name,
+    title: SITE.name,
+    description: SITE.description,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: SITE.name,
+      },
+    ],
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.name,
+    description: SITE.description,
+    images: ["/og-image.png"],
+  },
+};
 
 export default function RootLayout({
   children,

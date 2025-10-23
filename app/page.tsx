@@ -149,7 +149,7 @@ const galleryItems = [
     id: 6,
     title: '센터 전경',
     image: '/assets/images/gallery6.jpg',
-    description: `${SITE.name} 센터 전경`   // <<회사명>> 교체
+    description: `${SITE.name} 센터 전경`
   }
 ]
 
