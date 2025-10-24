@@ -48,17 +48,25 @@ export default function Header() {
             </nav>
 
             {/* 모바일 메뉴 버튼 */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+            <div className="md:hidden flex items-center gap-3">
+              {/* 모바일에서 로그인 상태 표시 */}
+              {session?.user && (
+                <div className="text-sm text-gray-600">
+                  {session.user.name || session.user.email}
+                </div>
+              )}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
 
-            {/* 인증 관련 버튼 */}
-            <div className="flex items-center gap-3">
+            {/* 인증 관련 버튼 - 모바일에서 숨김 */}
+            <div className="hidden lg:flex items-center gap-3">
               {status === "loading" ? (
                 <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
               ) : session ? (
