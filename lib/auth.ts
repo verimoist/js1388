@@ -12,14 +12,14 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }: { session: any; user: any }) {
+    async session({ session, user }: any) {
       if (session.user) {
         session.user.id = user.id
         session.user.role = (user as any).role || "user"
       }
       return session
     },
-    async signIn({ user, account, profile }: { user: any; account: any; profile: any }) {
+    async signIn({ user, account, profile }: any) {
       if (account?.provider === "github") {
         // GitHub 로그인 시 관리자 권한 체크
         const adminEmail = process.env.ADMIN_EMAIL
