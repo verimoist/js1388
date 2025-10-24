@@ -3,6 +3,7 @@
 import { signIn, getSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function SignInPage() {
   const router = useRouter()
