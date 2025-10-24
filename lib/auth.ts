@@ -46,4 +46,4 @@ export const authOptions = {
   },
 }
 
-export default NextAuth(authOptions)
+// NextAuth 인스턴스는 app/api/auth/[...nextauth]/route.ts에서 사용됩니다
