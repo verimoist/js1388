@@ -11,11 +11,13 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",
     "@prisma/client": "^6.18.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vercel/blob": "^2.0.0",
     "autoprefixer": "^10.0.1",
+    "bcryptjs": "^3.0.2",
     "clsx": "^2.0.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.294.0",
