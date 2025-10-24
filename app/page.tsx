@@ -219,10 +219,10 @@ export default function HomePage() {
 
         <div className="text-center mt-12">
           <Link href="/programs">
-            <Button variant="outline" size="lg">
-              모든 프로그램 보기
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <div className="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-2xl font-medium text-lg shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5">
+              <span className="mr-2">모든 프로그램 보기</span>
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+            </div>
           </Link>
         </div>
       </Section>
@@ -237,9 +237,9 @@ export default function HomePage() {
               </h2>
               <Link 
                 href="/news" 
-                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-green-500/30 text-green-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                더보기
+                <span className="mr-2">더보기</span>
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
@@ -253,9 +253,9 @@ export default function HomePage() {
               </h2>
               <Link 
                 href="/gallery" 
-                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-green-500/30 text-green-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                더보기
+                <span className="mr-2">더보기</span>
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>

@@ -37,7 +37,7 @@
   }
   
   .section-premium-dark {
-    @apply bg-gradient-to-br from-slate-900 via-green-900/20 to-blue-900/20 backdrop-blur-sm;
+    @apply bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500 backdrop-blur-sm;
   }
   
   /* 부드러운 카드 디자인 */
