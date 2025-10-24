@@ -31,19 +31,56 @@ export default function Header() {
           <div className="flex items-center gap-6">
             {/* 데스크톱 네비게이션 */}
             <nav className="hidden md:flex gap-6 text-sm">
-              <Link href="/about">소개</Link>
-              <Link href="/programs">사업안내</Link>
-              <Link href="/news">공지사항</Link>
-              <Link href="/gallery">갤러리</Link>
-              <Link href="/resources">자료실</Link>
-              <Link href="/contact">문의</Link>
+              <Link 
+                href="/about"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">소개</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/programs"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">사업안내</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/news"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">공지사항</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/gallery"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">갤러리</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/resources"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">자료실</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/contact"
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300"
+              >
+                <span className="relative z-10">문의</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
               <a 
                 href="https://me2.do/xoYOEKQ5" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-green-600 hover:text-green-700 font-medium"
+                className="group relative px-3 py-2 text-green-600 hover:text-green-700 font-medium transition-colors duration-300"
               >
-                후원신청
+                <span className="relative z-10">후원신청</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </a>
             </nav>
 
@@ -115,18 +152,54 @@ export default function Header() {
         {/* 모바일 메뉴 */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
-            <nav className="flex flex-col gap-4 text-sm">
-              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>소개</Link>
-              <Link href="/programs" onClick={() => setIsMobileMenuOpen(false)}>사업안내</Link>
-              <Link href="/news" onClick={() => setIsMobileMenuOpen(false)}>공지사항</Link>
-              <Link href="/gallery" onClick={() => setIsMobileMenuOpen(false)}>갤러리</Link>
-              <Link href="/resources" onClick={() => setIsMobileMenuOpen(false)}>자료실</Link>
-              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>문의</Link>
+            <nav className="flex flex-col gap-2 text-sm">
+              <Link 
+                href="/about" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                소개
+              </Link>
+              <Link 
+                href="/programs" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                사업안내
+              </Link>
+              <Link 
+                href="/news" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                공지사항
+              </Link>
+              <Link 
+                href="/gallery" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                갤러리
+              </Link>
+              <Link 
+                href="/resources" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                자료실
+              </Link>
+              <Link 
+                href="/contact" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="group relative px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
+              >
+                문의
+              </Link>
               <a 
                 href="https://me2.do/xoYOEKQ5" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-green-600 hover:text-green-700 font-medium"
+                className="group relative px-3 py-2 text-green-600 hover:text-green-700 font-medium transition-colors duration-300 rounded-lg hover:bg-green-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 후원신청
