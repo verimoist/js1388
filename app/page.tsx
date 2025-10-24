@@ -8,7 +8,7 @@ import Button from '../components/ui/Button'
 import NoticeList from '../components/NoticeList'
 import GalleryGrid from '../components/GalleryGrid'
 import ProgramCard from '../components/ProgramCard'
-import HeroSlider from '../components/HeroSlider'
+import HeroBanner from '../components/HeroBanner'
 import { SITE } from '../lib/site'
 
 export const metadata: Metadata = {
@@ -167,7 +167,7 @@ export default function HomePage() {
   return (
     <>
       {/* 히어로 슬라이더 */}
-      <HeroSlider />
+      <HeroBanner />
 
       {/* 주요 서비스 섹션 */}
       <Section>
