@@ -9,6 +9,7 @@ import NoticeList from '../components/NoticeList'
 import GalleryGrid from '../components/GalleryGrid'
 import ProgramCard from '../components/ProgramCard'
 import HeroBanner from '../components/HeroBanner'
+import ScrollAnimation from '../components/ui/ScrollAnimation'
 import { SITE } from '../lib/site'
 
 export const metadata: Metadata = {
@@ -200,30 +201,34 @@ export default function HomePage() {
 
       {/* 주요 사업 섹션 */}
       <Section background="premium">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">주요 사업</span>
-          </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            지역사회의 다양한 요구에 맞춘 전문적이고 체계적인 사업을 운영합니다.
-          </p>
-        </div>
+        <ScrollAnimation animation="fadeIn" delay={200}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-gradient">주요 사업</span>
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              지역사회의 다양한 요구에 맞춘 전문적이고 체계적인 사업을 운영합니다.
+            </p>
+          </div>
+        </ScrollAnimation>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => {
+          {services.map((service, index) => {
             const IconComponent = service.icon
             return (
-              <Card key={service.id} hover className="text-center p-6">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center ${service.color}`}>
-                  <IconComponent className="h-8 w-8" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {service.description}
-                </p>
-              </Card>
+              <ScrollAnimation key={service.id} animation="slideUp" delay={index * 100}>
+                <Card hover className="text-center p-6">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center ${service.color}`}>
+                    <IconComponent className="h-8 w-8" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {service.description}
+                  </p>
+                </Card>
+              </ScrollAnimation>
             )
           })}
         </div>
@@ -231,18 +236,22 @@ export default function HomePage() {
 
       {/* 사업 프로그램 섹션 */}
       <Section background="gray">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">사업 프로그램</span>
-          </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            체계적이고 전문적인 프로그램으로 지역사회의 다양한 요구를 충족합니다.
-          </p>
-        </div>
+        <ScrollAnimation animation="fadeIn" delay={200}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-gradient">사업 프로그램</span>
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              체계적이고 전문적인 프로그램으로 지역사회의 다양한 요구를 충족합니다.
+            </p>
+          </div>
+        </ScrollAnimation>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {programs.map((program) => (
-            <ProgramCard key={program.id} program={program} />
+          {programs.map((program, index) => (
+            <ScrollAnimation key={program.id} animation="slideUp" delay={index * 150}>
+              <ProgramCard program={program} />
+            </ScrollAnimation>
           ))}
         </div>
 
@@ -259,69 +268,76 @@ export default function HomePage() {
       {/* 공지사항 섹션 */}
       <Section background="premium">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-4xl font-bold">
-                <span className="text-gradient">공지사항</span>
-              </h2>
-              <Link 
-                href="/news" 
-                className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
-              >
-                <span className="mr-2">더보기</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
+          <ScrollAnimation animation="slideRight" delay={200}>
+            <div>
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-4xl font-bold">
+                  <span className="text-gradient">공지사항</span>
+                </h2>
+                <Link 
+                  href="/news" 
+                  className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
+                >
+                  <span className="mr-2">더보기</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+              <NoticeList notices={notices} limit={3} />
             </div>
-            <NoticeList notices={notices} limit={3} />
-          </div>
+          </ScrollAnimation>
 
-          <div>
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-4xl font-bold">
-                <span className="text-gradient">포토갤러리</span>
-              </h2>
-              <Link 
-                href="/gallery" 
-                className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
-              >
-                <span className="mr-2">더보기</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
+          <ScrollAnimation animation="slideLeft" delay={400}>
+            <div>
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-4xl font-bold">
+                  <span className="text-gradient">포토갤러리</span>
+                </h2>
+                <Link 
+                  href="/gallery" 
+                  className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5"
+                >
+                  <span className="mr-2">더보기</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+              <GalleryGrid items={galleryItems.slice(0, 4)} columns={2} />
             </div>
-            <GalleryGrid items={galleryItems.slice(0, 4)} columns={2} />
-          </div>
+          </ScrollAnimation>
         </div>
       </Section>
 
       {/* 파트너 섹션 */}
       <Section background="gray">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            협력 기관
-          </h2>
-          <p className="text-lg text-gray-600">
-            함께 만들어가는 지역사회 네트워크
-          </p>
-        </div>
+        <ScrollAnimation animation="fadeIn" delay={200}>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              협력 기관
+            </h2>
+            <p className="text-lg text-gray-600">
+              함께 만들어가는 지역사회 네트워크
+            </p>
+          </div>
+        </ScrollAnimation>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
           {partners.map((partner, index) => (
-            <a
-              key={index}
-              href={partner.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="max-h-12 w-auto opacity-60 group-hover:opacity-100 transition-opacity duration-300"
-              />
-              <span className="mt-2 text-xs text-gray-600 text-center group-hover:text-gray-900 transition-colors duration-300">
-                {partner.name}
-              </span>
-            </a>
+            <ScrollAnimation key={index} animation="scale" delay={index * 100}>
+              <a
+                href={partner.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="max-h-12 w-auto opacity-60 group-hover:opacity-100 transition-opacity duration-300"
+                />
+                <span className="mt-2 text-xs text-gray-600 text-center group-hover:text-gray-900 transition-colors duration-300">
+                  {partner.name}
+                </span>
+              </a>
+            </ScrollAnimation>
           ))}
         </div>
       </Section>
