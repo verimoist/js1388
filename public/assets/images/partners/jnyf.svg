@@ -1,0 +1,23 @@
+<svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 전라남도청소년미래재단 로고 -->
+  <defs>
+    <linearGradient id="jnyfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea580c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f97316;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 원 -->
+  <circle cx="30" cy="30" r="25" fill="url(#jnyfGradient)" stroke="#c2410c" stroke-width="2"/>
+  
+  <!-- 미래재단 심볼 -->
+  <path d="M20 20 L40 20 L30 40 Z" fill="white"/>
+  <path d="M25 25 L35 25 L30 35 Z" fill="#ea580c"/>
+  <circle cx="30" cy="30" r="2" fill="white"/>
+  
+  <!-- 텍스트 -->
+  <text x="55" y="18" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ea580c">전라남도</text>
+  <text x="55" y="28" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ea580c">청소년</text>
+  <text x="55" y="38" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ea580c">미래재단</text>
+  <text x="55" y="48" font-family="Arial, sans-serif" font-size="7" fill="#6b7280">JNYF</text>
+</svg>

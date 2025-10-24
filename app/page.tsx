@@ -158,37 +158,37 @@ const galleryItems = [
 const partners = [
   { 
     name: '전라남도 교육청', 
-    logo: '/assets/images/partner1.png',
+    logo: '/assets/images/partners/jeonnam-edu.svg',
     url: 'https://www.jne.go.kr'
   },
   { 
     name: '전라남도장성교육지원청', 
-    logo: '/assets/images/partner2.png',
+    logo: '/assets/images/partners/jangseong-edu.svg',
     url: 'https://www.jne.go.kr/jangseong'
   },
   { 
     name: '한국청소년활동진흥원', 
-    logo: '/assets/images/partner3.png',
+    logo: '/assets/images/partners/kywa.svg',
     url: 'https://www.kywa.or.kr'
   },
   { 
     name: '한국청소년상담복지개발원', 
-    logo: '/assets/images/partner4.png',
+    logo: '/assets/images/partners/kyci.svg',
     url: 'https://www.kyci.or.kr'
   },
   { 
     name: '전라남도청소년미래재단', 
-    logo: '/assets/images/partner5.png',
+    logo: '/assets/images/partners/jnyf.svg',
     url: 'https://www.jnyf.or.kr'
   },
   { 
     name: '전라남도', 
-    logo: '/assets/images/partner6.png',
+    logo: '/assets/images/partners/jeonnam-province.svg',
     url: 'https://www.jeonnam.go.kr'
   },
   { 
     name: '장성군', 
-    logo: '/assets/images/partner1.png',
+    logo: '/assets/images/partners/jangseong-county.svg',
     url: 'https://www.jangseong.go.kr'
   }
 ]

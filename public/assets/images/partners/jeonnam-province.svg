@@ -1,0 +1,21 @@
+<svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 전라남도 로고 -->
+  <defs>
+    <linearGradient id="jeonnamProvinceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f766e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 원 -->
+  <circle cx="30" cy="30" r="25" fill="url(#jeonnamProvinceGradient)" stroke="#0d9488" stroke-width="2"/>
+  
+  <!-- 전라남도 심볼 -->
+  <path d="M20 20 L40 20 L40 40 L20 40 Z" fill="white"/>
+  <path d="M25 25 L35 25 L35 35 L25 35 Z" fill="#0f766e"/>
+  <path d="M27 27 L33 27 L30 33 Z" fill="white"/>
+  
+  <!-- 텍스트 -->
+  <text x="55" y="25" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0f766e">전라남도</text>
+  <text x="55" y="40" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Jeonnam</text>
+</svg>

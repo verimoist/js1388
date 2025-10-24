@@ -46,7 +46,7 @@ export default function ScrollAnimation({
 
   return (
     <div
-      ref={ref as React.RefObject<HTMLDivElement>}
+      ref={ref}
       className={`${getAnimationClasses()} ${className}`}
       style={{
         transitionDelay: `${delay}ms`
