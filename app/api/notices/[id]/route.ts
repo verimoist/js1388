@@ -65,7 +65,7 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "입력 데이터가 올바르지 않습니다", details: error.errors },
+        { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
         { status: 400 }
       )
     }
