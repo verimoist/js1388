@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { SITE } from "../../lib/site";
 
@@ -12,8 +13,17 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* 로고/사이트명 */}
-          <Link href="/" className="text-xl font-semibold">
-            {SITE.name}
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/assets/images/logo.svg"
+              alt="자림터 로고"
+              width={40}
+              height={40}
+              className="w-10 h-10"
+            />
+            <span className="text-xl font-semibold text-green-600">
+              {SITE.name}
+            </span>
           </Link>
 
           <div className="flex items-center gap-6">

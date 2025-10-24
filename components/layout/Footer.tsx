@@ -1,5 +1,6 @@
 // components/layout/Footer.tsx
 import Link from "next/link";
+import Image from "next/image";
 import { SITE } from "../../lib/site";
 
 export default function Footer() {
@@ -9,7 +10,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* 기관 정보 */}
           <div className="space-y-1 text-sm">
-            <div className="text-base font-semibold">{SITE.name}</div>
+            <div className="flex items-center gap-2 text-base font-semibold">
+              <Image
+                src="/assets/images/logo.svg"
+                alt="자림터 로고"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+              {SITE.name}
+            </div>
             <div>{SITE.address}</div>
             <div>
               전화:{" "}
