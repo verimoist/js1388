@@ -170,12 +170,12 @@ export default function HomePage() {
       <HeroBanner />
 
       {/* 주요 서비스 섹션 */}
-      <Section>
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            주요 서비스
+      <Section background="premium">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="text-gradient">주요 서비스</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             지역사회의 다양한 요구에 맞춘 전문적이고 체계적인 서비스를 제공합니다.
           </p>
         </div>
@@ -202,11 +202,11 @@ export default function HomePage() {
 
       {/* 사업 프로그램 섹션 */}
       <Section background="gray">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            사업 프로그램
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="text-gradient-blue">사업 프로그램</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             체계적이고 전문적인 프로그램으로 지역사회의 다양한 요구를 충족합니다.
           </p>
         </div>
@@ -228,31 +228,35 @@ export default function HomePage() {
       </Section>
 
       {/* 공지사항 섹션 */}
-      <Section>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <Section background="premium">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">공지사항</h2>
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-4xl font-bold">
+                <span className="text-gradient">공지사항</span>
+              </h2>
               <Link 
                 href="/news" 
-                className="text-brand-primary hover:text-blue-700 font-medium flex items-center"
+                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-green-500/30 text-green-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 더보기
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
             <NoticeList notices={notices} limit={3} />
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">포토갤러리</h2>
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-4xl font-bold">
+                <span className="text-gradient-blue">포토갤러리</span>
+              </h2>
               <Link 
                 href="/gallery" 
-                className="text-brand-primary hover:text-blue-700 font-medium flex items-center"
+                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-blue-500/30 text-blue-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 더보기
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
             <GalleryGrid items={galleryItems.slice(0, 4)} columns={2} />
@@ -285,12 +289,14 @@ export default function HomePage() {
       </Section>
 
       {/* CTA 섹션 */}
-      <Section background="primary" className="text-white">
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            지금 바로 시작하세요
+      <Section background="premium-dark" className="text-white">
+        <div className="text-center max-w-4xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8">
+            <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+              지금 바로 시작하세요
+            </span>
           </h2>
-          <p className="text-xl mb-8 text-blue-100">
+          <p className="text-xl md:text-2xl mb-12 text-blue-100 leading-relaxed">
             궁금한 점이 있으시거나 서비스 이용을 원하시면 언제든지 연락주세요.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">

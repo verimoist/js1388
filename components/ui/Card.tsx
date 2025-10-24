@@ -5,14 +5,17 @@ interface CardProps {
   children: ReactNode
   className?: string
   hover?: boolean
+  premium?: boolean
 }
 
-const Card = ({ children, className = '', hover = false }: CardProps) => {
+const Card = ({ children, className = '', hover = false, premium = false }: CardProps) => {
   return (
     <div
       className={clsx(
-        'bg-white rounded-lg shadow-md border border-gray-200 p-6',
-        hover && 'hover:shadow-lg transition-shadow duration-200',
+        premium 
+          ? 'card-premium p-8' 
+          : 'bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6',
+        hover && 'hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1',
         className
       )}
     >

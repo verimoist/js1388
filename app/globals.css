@@ -8,7 +8,8 @@
   }
   
   body {
-    @apply text-gray-900 bg-white;
+    @apply text-gray-800 bg-gradient-to-br from-slate-50 via-green-50/30 to-blue-50/20;
+    background-attachment: fixed;
   }
 }
 
@@ -17,15 +18,39 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
   
+  /* 프리미엄 그라데이션 버튼 */
   .btn-primary {
-    @apply bg-brand-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200;
+    @apply bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5;
   }
   
   .btn-secondary {
-    @apply bg-brand-secondary text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-600 transition-colors duration-200;
+    @apply bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5;
   }
   
   .btn-outline {
-    @apply border-2 border-brand-primary text-brand-primary px-6 py-3 rounded-lg font-medium hover:bg-brand-primary hover:text-white transition-colors duration-200;
+    @apply bg-white/80 backdrop-blur-sm border-2 border-green-500/30 text-green-600 px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:bg-green-50 transition-all duration-300 transform hover:-translate-y-0.5;
+  }
+  
+  /* 프리미엄 섹션 배경 */
+  .section-premium {
+    @apply bg-gradient-to-br from-white/90 via-green-50/50 to-blue-50/30 backdrop-blur-sm;
+  }
+  
+  .section-premium-dark {
+    @apply bg-gradient-to-br from-slate-900 via-green-900/20 to-blue-900/20 backdrop-blur-sm;
+  }
+  
+  /* 부드러운 카드 디자인 */
+  .card-premium {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 rounded-2xl;
+  }
+  
+  /* 그라데이션 텍스트 */
+  .text-gradient {
+    @apply bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
   }
 }
