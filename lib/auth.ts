@@ -22,10 +22,17 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }: any) {
       if (account?.provider === "github") {
         // GitHub 로그인 시 관리자 권한 체크
-        const adminEmail = process.env.ADMIN_EMAIL
-        console.log("Sign in attempt:", { userEmail: user.email, adminEmail })
+        const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
+        const fallbackAdminEmail = process.env.ADMIN_EMAIL
         
-        if (user.email === adminEmail) {
+        // 기존 단일 이메일도 지원 (하위 호환성)
+        if (fallbackAdminEmail) {
+          adminEmails.push(fallbackAdminEmail)
+        }
+        
+        console.log("Sign in attempt:", { userEmail: user.email, adminEmails })
+        
+        if (adminEmails.includes(user.email)) {
           // 관리자 이메일인 경우 role을 admin으로 설정
           try {
             await prisma.user.update({

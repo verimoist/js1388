@@ -10,6 +10,7 @@ const navigation = [
   { name: "보도자료", href: "/admin/press" },
   { name: "갤러리", href: "/admin/gallery" },
   { name: "자료실", href: "/admin/resources" },
+  { name: "설정", href: "/admin/settings" },
 ]
 
 export default function AdminSidebar() {
