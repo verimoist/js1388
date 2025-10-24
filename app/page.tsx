@@ -8,6 +8,7 @@ import Button from '../components/ui/Button'
 import NoticeList from '../components/NoticeList'
 import GalleryGrid from '../components/GalleryGrid'
 import ProgramCard from '../components/ProgramCard'
+import HeroSlider from '../components/HeroSlider'
 import { SITE } from '../lib/site'
 
 export const metadata: Metadata = {
@@ -165,29 +166,8 @@ const partners = [
 export default function HomePage() {
   return (
     <>
-      {/* 히어로 섹션 */}
-      <Section background="primary" className="text-white">
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {heroData.title}
-            <br />
-            <span className="text-brand-secondary">{heroData.subtitle}</span>
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-blue-100">
-            {heroData.description}
-          </p>
-          <Link href="/contact">
-            <Button 
-              variant="secondary" 
-              size="lg"
-              className="text-lg px-8 py-4"
-            >
-              {heroData.cta}
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
-      </Section>
+      {/* 히어로 슬라이더 */}
+      <HeroSlider />
 
       {/* 주요 서비스 섹션 */}
       <Section>
