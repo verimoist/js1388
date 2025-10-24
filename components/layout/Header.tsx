@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useState } from "react";
 import { SITE } from "../../lib/site";
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
@@ -27,7 +29,7 @@ export default function Header() {
           </Link>
 
           <div className="flex items-center gap-6">
-            {/* 네비게이션 */}
+            {/* 데스크톱 네비게이션 */}
             <nav className="hidden md:flex gap-6 text-sm">
               <Link href="/about">소개</Link>
               <Link href="/programs">사업안내</Link>
@@ -35,7 +37,25 @@ export default function Header() {
               <Link href="/gallery">갤러리</Link>
               <Link href="/resources">자료실</Link>
               <Link href="/contact">문의</Link>
+              <a 
+                href="https://me2.do/xoYOEKQ5" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
+                후원신청
+              </a>
             </nav>
+
+            {/* 모바일 메뉴 버튼 */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
             {/* 인증 관련 버튼 */}
             <div className="flex items-center gap-3">
@@ -76,6 +96,29 @@ export default function Header() {
             </div>
           </div>
         </div>
+
+        {/* 모바일 메뉴 */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 py-4">
+            <nav className="flex flex-col gap-4 text-sm">
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>소개</Link>
+              <Link href="/programs" onClick={() => setIsMobileMenuOpen(false)}>사업안내</Link>
+              <Link href="/news" onClick={() => setIsMobileMenuOpen(false)}>공지사항</Link>
+              <Link href="/gallery" onClick={() => setIsMobileMenuOpen(false)}>갤러리</Link>
+              <Link href="/resources" onClick={() => setIsMobileMenuOpen(false)}>자료실</Link>
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>문의</Link>
+              <a 
+                href="https://me2.do/xoYOEKQ5" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-green-600 hover:text-green-700 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                후원신청
+              </a>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

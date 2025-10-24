@@ -48,6 +48,16 @@ export default function Footer() {
               <li><Link href="/gallery">갤러리</Link></li>
               <li><Link href="/resources">자료실</Link></li>
               <li><Link href="/contact">문의</Link></li>
+              <li>
+                <a 
+                  href="https://me2.do/xoYOEKQ5" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-green-400 hover:text-green-300"
+                >
+                  후원신청
+                </a>
+              </li>
             </ul>
           </div>
 
