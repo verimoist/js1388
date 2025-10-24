@@ -169,14 +169,14 @@ export default function HomePage() {
       {/* 히어로 슬라이더 */}
       <HeroBanner />
 
-      {/* 주요 서비스 섹션 */}
+      {/* 주요 사업 섹션 */}
       <Section background="premium">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">주요 서비스</span>
+            <span className="text-gradient">주요 사업</span>
           </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            지역사회의 다양한 요구에 맞춘 전문적이고 체계적인 서비스를 제공합니다.
+            지역사회의 다양한 요구에 맞춘 전문적이고 체계적인 사업을 운영합니다.
           </p>
         </div>
 
@@ -204,7 +204,7 @@ export default function HomePage() {
       <Section background="gray">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient-blue">사업 프로그램</span>
+            <span className="text-gradient">사업 프로그램</span>
           </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             체계적이고 전문적인 프로그램으로 지역사회의 다양한 요구를 충족합니다.
@@ -249,11 +249,11 @@ export default function HomePage() {
           <div>
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-4xl font-bold">
-                <span className="text-gradient-blue">포토갤러리</span>
+                <span className="text-gradient">포토갤러리</span>
               </h2>
               <Link 
                 href="/gallery" 
-                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-blue-500/30 text-blue-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                className="group flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-green-500/30 text-green-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 더보기
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />

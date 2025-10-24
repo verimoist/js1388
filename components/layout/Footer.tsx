@@ -70,8 +70,26 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-8 pt-6 text-xs opacity-70">
-          © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+        <div className="border-t border-white/10 mt-8 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-xs opacity-70">
+              © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            </div>
+            <div className="flex gap-6 text-xs">
+              <Link 
+                href="/privacy" 
+                className="text-green-400 hover:text-green-300 transition-colors"
+              >
+                개인정보처리방침
+              </Link>
+              <Link 
+                href="/terms" 
+                className="text-green-400 hover:text-green-300 transition-colors"
+              >
+                이용약관
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
