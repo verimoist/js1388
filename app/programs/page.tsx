@@ -42,10 +42,14 @@ const programsData = [
 export default function ProgramsPage() {
   return (
     <>
-      <Section background="primary" className="text-white">
+      <Section background="premium-dark" className="text-white">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">사업안내</h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-white to-green-100 bg-clip-text text-transparent">
+              사업안내
+            </span>
+          </h1>
+          <p className="text-xl text-green-100 max-w-2xl mx-auto">
             {SITE.name}에서 운영하는 주요 프로그램을 소개합니다.
           </p>
         </div>

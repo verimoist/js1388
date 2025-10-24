@@ -288,44 +288,6 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* CTA 섹션 */}
-      <Section background="premium-dark" className="text-white">
-        <div className="text-center max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">
-            <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              지금 바로 시작하세요
-            </span>
-          </h2>
-          <p className="text-xl md:text-2xl mb-12 text-blue-100 leading-relaxed">
-            궁금한 점이 있으시거나 서비스 이용을 원하시면 언제든지 연락주세요.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link href="/contact">
-              <div className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-white/30 to-white/50 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-white/20 backdrop-blur-sm border border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <Phone className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
-                    <span>상담 문의하기</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/programs">
-              <div className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/50 to-cyan-400/50 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-blue-300/30 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="flex items-center">
-                    <span>프로그램 보기</span>
-                    <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </Section>
     </>
   )
 }

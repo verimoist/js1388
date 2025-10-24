@@ -30,10 +30,14 @@ export default function ContactPage() {
   return (
     <>
       {/* 페이지 헤더 */}
-      <Section background="primary" className="text-white">
+      <Section background="premium-dark" className="text-white">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">상담·문의</h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-white to-green-100 bg-clip-text text-transparent">
+              상담·문의
+            </span>
+          </h1>
+          <p className="text-xl text-green-100 max-w-2xl mx-auto">
             궁금한 점이 있으시면 아래 연락처로 문의해 주세요.
           </p>
         </div>

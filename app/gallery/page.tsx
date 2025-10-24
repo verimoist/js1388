@@ -122,10 +122,14 @@ export default function GalleryPage() {
   return (
     <>
       {/* 페이지 헤더 */}
-      <Section background="primary" className="text-white">
+      <Section background="premium-dark" className="text-white">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">포토갤러리</h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-white to-green-100 bg-clip-text text-transparent">
+              포토갤러리
+            </span>
+          </h1>
+          <p className="text-xl text-green-100 max-w-2xl mx-auto">
             {SITE.name}의 다양한 활동과 프로그램을 사진으로 확인하세요.
           </p>
         </div>

@@ -162,10 +162,14 @@ export default function ResourcesPage() {
   return (
     <>
       {/* 페이지 헤더 */}
-      <Section background="primary" className="text-white">
+      <Section background="premium-dark" className="text-white">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">자료실</h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-white to-green-100 bg-clip-text text-transparent">
+              자료실
+            </span>
+          </h1>
+          <p className="text-xl text-green-100 max-w-2xl mx-auto">
             {SITE.name}의 각종 양식, 가이드, 보고서 등 유용한 자료를 다운로드하세요.
           </p>
         </div>
