@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* 기관 정보 */}
           <div className="space-y-1 text-sm">
-            <div className="flex items-center gap-2 text-base font-semibold">
+            <div className="flex items-center gap-2 text-base font-medium text-green-400">
               <Image
                 src="/assets/images/logo.svg"
                 alt="자림터 로고"

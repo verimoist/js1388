@@ -21,7 +21,7 @@ export default function Header() {
               height={40}
               className="w-10 h-10"
             />
-            <span className="text-xl font-semibold text-green-600">
+            <span className="text-xl font-medium text-green-600 tracking-wide">
               {SITE.name}
             </span>
           </Link>
