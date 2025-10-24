@@ -64,6 +64,12 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async signIn({ user, account, profile }: any) {
+      console.log("Sign in attempt:", { 
+        userEmail: user.email, 
+        provider: account?.provider,
+        userRole: user.role 
+      })
+      
       if (account?.provider === "github") {
         // GitHub 로그인 시 관리자 권한 체크
         const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
@@ -73,8 +79,6 @@ export const authOptions: NextAuthOptions = {
         if (fallbackAdminEmail) {
           adminEmails.push(fallbackAdminEmail)
         }
-        
-        console.log("Sign in attempt:", { userEmail: user.email, adminEmails })
         
         if (adminEmails.includes(user.email)) {
           // 관리자 이메일인 경우 role을 admin으로 설정
@@ -88,7 +92,11 @@ export const authOptions: NextAuthOptions = {
             console.error("Error assigning admin role:", error)
           }
         }
+      } else if (account?.provider === "credentials") {
+        // 이메일 로그인 시 - 이미 데이터베이스에서 권한을 가져왔으므로 그대로 사용
+        console.log("Credentials login - user role:", user.role)
       }
+      
       return true
     },
   },
