@@ -155,12 +155,41 @@ const galleryItems = [
 ]
 
 const partners = [
-  { name: '지역사회복지협의회', logo: '/assets/images/partner1.png' },
-  { name: '청소년지원센터', logo: '/assets/images/partner2.png' },
-  { name: '여성가족부', logo: '/assets/images/partner3.png' },
-  { name: '교육청', logo: '/assets/images/partner4.png' },
-  { name: '시청', logo: '/assets/images/partner5.png' },
-  { name: '복지재단', logo: '/assets/images/partner6.png' }
+  { 
+    name: '전라남도 교육청', 
+    logo: '/assets/images/partner1.png',
+    url: 'https://www.jne.go.kr'
+  },
+  { 
+    name: '전라남도장성교육지원청', 
+    logo: '/assets/images/partner2.png',
+    url: 'https://www.jne.go.kr/jangseong'
+  },
+  { 
+    name: '한국청소년활동진흥원', 
+    logo: '/assets/images/partner3.png',
+    url: 'https://www.kywa.or.kr'
+  },
+  { 
+    name: '한국청소년상담복지개발원', 
+    logo: '/assets/images/partner4.png',
+    url: 'https://www.kyci.or.kr'
+  },
+  { 
+    name: '전라남도청소년미래재단', 
+    logo: '/assets/images/partner5.png',
+    url: 'https://www.jnyf.or.kr'
+  },
+  { 
+    name: '전라남도', 
+    logo: '/assets/images/partner6.png',
+    url: 'https://www.jeonnam.go.kr'
+  },
+  { 
+    name: '장성군', 
+    logo: '/assets/images/partner1.png',
+    url: 'https://www.jangseong.go.kr'
+  }
 ]
 
 export default function HomePage() {
@@ -275,15 +304,24 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
           {partners.map((partner, index) => (
-            <div key={index} className="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <a
+              key={index}
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+            >
               <img
                 src={partner.logo}
                 alt={partner.name}
-                className="max-h-12 w-auto opacity-60 hover:opacity-100 transition-opacity"
+                className="max-h-12 w-auto opacity-60 group-hover:opacity-100 transition-opacity duration-300"
               />
-            </div>
+              <span className="mt-2 text-xs text-gray-600 text-center group-hover:text-gray-900 transition-colors duration-300">
+                {partner.name}
+              </span>
+            </a>
           ))}
         </div>
       </Section>
