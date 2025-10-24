@@ -56,17 +56,11 @@ export default function Header() {
               ) : (
                 <div className="flex space-x-2">
                   <Link
-                    href="/auth/email-signin"
+                    href="/auth/login"
                     className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
                   >
-                    이메일 로그인
+                    관리자 로그인
                   </Link>
-                  <button
-                    onClick={() => signIn("github")}
-                    className="px-4 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800"
-                  >
-                    GitHub 로그인
-                  </button>
                 </div>
               )}
             </div>
