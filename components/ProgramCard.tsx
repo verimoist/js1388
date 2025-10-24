@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Users, Calendar, MapPin } from 'lucide-react'
 import Card from './ui/Card'
 import Button from './ui/Button'
@@ -25,10 +26,11 @@ const ProgramCard = ({ program, className = '' }: ProgramCardProps) => {
       <div className="space-y-4">
         {/* 이미지 */}
         <div className="relative h-48 overflow-hidden rounded-lg">
-          <img
+          <Image
             src={program.image}
             alt={program.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         </div>
 

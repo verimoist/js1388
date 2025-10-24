@@ -24,7 +24,7 @@ export default function TermsPage() {
           <div className="card-premium p-8 mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">제1조 (목적)</h2>
             <p className="text-gray-700 leading-relaxed">
-              이 약관은 장성청소년자람터 오늘(이하 "기관")이 제공하는 청소년 상담, 진로지도, 자람 프로그램 등의 서비스(이하 "서비스")를 이용함에 있어 기관과 이용자의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
+              이 약관은 장성청소년자람터 오늘(이하 &quot;기관&quot;)이 제공하는 청소년 상담, 진로지도, 자람 프로그램 등의 서비스(이하 &quot;서비스&quot;)를 이용함에 있어 기관과 이용자의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
             </p>
           </div>
 
@@ -32,9 +32,9 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">제2조 (정의)</h2>
             <p className="text-gray-700 leading-relaxed mb-4">이 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
             <ul className="list-disc list-inside text-gray-700">
-              <li>"서비스"란 기관이 제공하는 청소년 상담, 진로지도, 자람 프로그램 등을 의미합니다.</li>
-              <li>"이용자"란 기관의 서비스에 접속하여 이 약관에 따라 기관이 제공하는 서비스를 받는 청소년 및 보호자를 의미합니다.</li>
-              <li>"보호자"란 청소년의 법정대리인 또는 사실상의 보호자를 의미합니다.</li>
+              <li>&quot;서비스&quot;란 기관이 제공하는 청소년 상담, 진로지도, 자람 프로그램 등을 의미합니다.</li>
+              <li>&quot;이용자&quot;란 기관의 서비스에 접속하여 이 약관에 따라 기관이 제공하는 서비스를 받는 청소년 및 보호자를 의미합니다.</li>
+              <li>&quot;보호자&quot;란 청소년의 법정대리인 또는 사실상의 보호자를 의미합니다.</li>
             </ul>
           </div>
 
