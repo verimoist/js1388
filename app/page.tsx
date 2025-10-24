@@ -293,18 +293,29 @@ export default function HomePage() {
           <p className="text-xl mb-8 text-blue-100">
             궁금한 점이 있으시거나 서비스 이용을 원하시면 언제든지 연락주세요.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/contact">
-              <Button variant="secondary" size="lg">
-                <Phone className="mr-2 h-5 w-5" />
-                상담 문의하기
-              </Button>
+              <div className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-white/30 to-white/50 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative bg-white/20 backdrop-blur-sm border border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="flex items-center">
+                    <Phone className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+                    <span>상담 문의하기</span>
+                  </div>
+                </div>
+              </div>
             </Link>
+            
             <Link href="/programs">
-              <Button variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white hover:text-brand-primary">
-                프로그램 보기
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <div className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/50 to-cyan-400/50 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-blue-300/30 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="flex items-center">
+                    <span>프로그램 보기</span>
+                    <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
