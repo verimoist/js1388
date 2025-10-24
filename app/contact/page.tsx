@@ -53,7 +53,7 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <Card className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-brand-primary text-white rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg">
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div>
@@ -65,7 +65,7 @@ export default function ContactPage() {
 
                 <Card className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-brand-primary text-white rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg">
                       <Phone className="h-6 w-6" />
                     </div>
                     <div>
@@ -74,7 +74,10 @@ export default function ContactPage() {
                         <a href={`tel:${SITE.phone}`} className="underline">{SITE.phone}</a>
                       </p>
                        <a href={`tel:${SITE.phone}`} className="inline-block mt-3">
-                         <Button variant="primary" size="sm">📞 전화걸기</Button>
+                         <div className="group inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5">
+                           <Phone className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                           <span>전화걸기</span>
+                         </div>
                        </a>
                     </div>
                   </div>
@@ -82,7 +85,7 @@ export default function ContactPage() {
 
                 <Card className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-brand-primary text-white rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg">
                       <Clock className="h-6 w-6" />
                     </div>
                     <div>
@@ -102,7 +105,10 @@ export default function ContactPage() {
                 현재는 전화 문의만 받고 있습니다.
                  <div className="mt-4">
                    <a href={`tel:${SITE.phone}`} className="block">
-                     <Button variant="primary" className="w-full">📞 {SITE.phone} 로 전화하기</Button>
+                     <div className="group w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5">
+                       <Phone className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                       <span>{SITE.phone} 로 전화하기</span>
+                     </div>
                    </a>
                  </div>
                 {/* 이메일/폼이 생기면 아래 폼을 사용하세요 (Formspree 등)
@@ -127,7 +133,9 @@ export default function ContactPage() {
                 <p className="text-sm text-gray-600 mb-4">{dept.description}</p>
                 <div className="space-y-2">
                   <div className="flex items-center justify-center space-x-2">
-                    <Phone className="h-4 w-4 text-brand-primary" />
+                    <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-lg flex items-center justify-center">
+                      <Phone className="h-3 w-3" />
+                    </div>
                     <span className="text-sm text-gray-700">{dept.phone}</span>
                   </div>
                 </div>
