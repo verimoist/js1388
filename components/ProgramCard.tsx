@@ -76,10 +76,10 @@ const ProgramCard = ({ program, className = '' }: ProgramCardProps) => {
           {/* CTA 버튼 */}
           <div className="pt-4">
             <Link href={`/programs/${program.id}`} className="block">
-              <Button variant="outline" size="sm" className="w-full group">
-                자세히 보기
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <div className="group w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 text-green-700 rounded-xl font-medium shadow-sm hover:shadow-md hover:from-green-100 hover:to-emerald-100 transition-all duration-300 transform hover:-translate-y-0.5">
+                <span className="mr-2">자세히 보기</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </div>
             </Link>
           </div>
         </div>
