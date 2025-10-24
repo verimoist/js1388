@@ -11,7 +11,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-white shadow-lg sticky top-0 z-50 relative">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* 로고/사이트명 */}
@@ -123,6 +123,43 @@ export default function Header() {
               >
                 후원신청
               </a>
+              
+              {/* 모바일 로그인 버튼 */}
+              <div className="pt-4 border-t border-gray-200 mt-4">
+                {session?.user ? (
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-600">
+                      {session.user.name || session.user.email}님
+                    </div>
+                    {session.user.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        className="block w-full text-center py-2 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        관리자
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => {
+                        signOut()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="block w-full text-center py-2 px-4 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    className="block w-full text-center py-2 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-emerald-700 transition-all duration-300"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    로그인
+                  </Link>
+                )}
+              </div>
             </nav>
           </div>
         )}

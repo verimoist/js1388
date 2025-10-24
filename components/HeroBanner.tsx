@@ -26,7 +26,7 @@ export default function HeroBanner() {
       </div>
       
       {/* 메인 콘텐츠 */}
-      <div className="relative z-10 flex items-center justify-center h-full">
+      <div className="relative z-10 flex items-center justify-center h-full pt-20 md:pt-0">
         <div className="text-center max-w-4xl mx-auto px-4">
           {/* 로고와 사이트명 */}
           <div className="flex flex-col items-center mb-8">
