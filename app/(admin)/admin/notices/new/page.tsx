@@ -39,6 +39,28 @@ export default function NewNoticePage() {
     for (const file of Array.from(files)) {
       try {
         console.log('파일 업로드 중:', file.name)
+        
+        // 파일 타입 검증 (이미지, 문서, 압축 파일 등 허용)
+        const allowedTypes = [
+          'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+          'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          'text/plain', 'application/zip', 'application/x-rar-compressed'
+        ]
+        
+        if (!allowedTypes.includes(file.type)) {
+          alert(`지원하지 않는 파일 형식입니다: ${file.name} (${file.type})`)
+          continue
+        }
+        
+        // 파일 크기 제한 (10MB)
+        const maxSize = 10 * 1024 * 1024 // 10MB
+        if (file.size > maxSize) {
+          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`)
+          continue
+        }
+        
         const formData = new FormData()
         formData.append('file', file)
 
@@ -66,7 +88,7 @@ export default function NewNoticePage() {
         }
       } catch (error) {
         console.error('파일 업로드 오류:', error)
-        alert(`파일 업로드 오류: ${file.name} - ${error.message}`)
+        alert(`파일 업로드 오류: ${file.name} - ${error instanceof Error ? error.message : '알 수 없는 오류'}`)
       }
     }
   }
