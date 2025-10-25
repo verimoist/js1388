@@ -77,14 +77,15 @@ const ProgramCard = ({ program, className = '' }: ProgramCardProps) => {
           {/* CTA 버튼 */}
           <div className="pt-4">
             <Link href={`/programs/${program.id}`} className="block">
-              <InteractiveButton
-                variant="outline"
-                size="md"
-                className="w-full"
-              >
-                <span className="mr-2">자세히 보기</span>
-                <ArrowRight className="h-4 w-4" />
-              </InteractiveButton>
+              <div className="group relative w-full">
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative bg-white border-2 border-green-500 text-green-600 hover:bg-green-50 rounded-lg px-4 py-3 font-medium text-center transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="text-sm font-semibold">자세히 보기</span>
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
