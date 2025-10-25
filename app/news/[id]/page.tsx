@@ -114,7 +114,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
             />
             
             {/* 첨부파일 섹션 */}
-            {notice.attachments && Array.isArray(notice.attachments) && notice.attachments.length > 0 && (
+            {(notice as any).attachments && Array.isArray((notice as any).attachments) && (notice as any).attachments.length > 0 && (
               <div className="mt-8 border-t pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,7 +123,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
                   첨부파일
                 </h3>
                 <div className="space-y-2">
-                  {notice.attachments.map((attachment: any, index: number) => (
+                  {(notice as any).attachments.map((attachment: any, index: number) => (
                     <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
             )}
             
             {/* 링크 섹션 */}
-            {notice.links && Array.isArray(notice.links) && notice.links.length > 0 && (
+            {(notice as any).links && Array.isArray((notice as any).links) && (notice as any).links.length > 0 && (
               <div className="mt-8 border-t pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +160,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
                   관련 링크
                 </h3>
                 <div className="space-y-3">
-                  {notice.links.map((link: any, index: number) => (
+                  {(notice as any).links.map((link: any, index: number) => (
                     <div key={index} className="bg-gray-50 p-4 rounded-lg">
                       <a
                         href={link.url}
