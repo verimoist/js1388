@@ -72,8 +72,8 @@ export default function NewNoticePage() {
         },
         body: JSON.stringify({
           ...formData,
-          attachments: attachments.length > 0 ? attachments : null,
-          links: links.length > 0 ? links : null,
+          ...(attachments.length > 0 && { attachments }),
+          ...(links.length > 0 && { links }),
         }),
       })
 
@@ -81,7 +81,8 @@ export default function NewNoticePage() {
         router.push("/admin/notices")
       } else {
         const error = await response.json()
-        alert(error.error || "공지사항 생성에 실패했습니다.")
+        console.error("API Error:", error)
+        alert(`공지사항 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}`)
       }
     } catch (error) {
       console.error("Error creating notice:", error)

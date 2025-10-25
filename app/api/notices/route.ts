@@ -14,12 +14,12 @@ const createNoticeSchema = z.object({
     url: z.string(),
     size: z.number(),
     type: z.string()
-  })).optional(),
+  })).optional().nullable(),
   links: z.array(z.object({
     title: z.string(),
     url: z.string(),
     description: z.string().optional()
-  })).optional(),
+  })).optional().nullable(),
 })
 
 export async function GET(request: NextRequest) {
@@ -83,7 +83,12 @@ export async function POST(request: NextRequest) {
 
     const notice = await prisma.notice.create({
       data: {
-        ...validatedData,
+        title: validatedData.title,
+        content: validatedData.content,
+        category: validatedData.category,
+        published: validatedData.published,
+        attachments: validatedData.attachments || null,
+        links: validatedData.links || null,
         authorId: session.user.id,
       },
       include: { author: { select: { name: true, email: true } } },
