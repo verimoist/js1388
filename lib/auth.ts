@@ -93,7 +93,28 @@ export const authOptions: NextAuthOptions = {
           }
         }
       } else if (account?.provider === "credentials") {
-        // 이메일 로그인 시 - 이미 데이터베이스에서 권한을 가져왔으므로 그대로 사용
+        // 이메일 로그인 시에도 관리자 권한 체크
+        const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
+        const fallbackAdminEmail = process.env.ADMIN_EMAIL
+        
+        // 기존 단일 이메일도 지원 (하위 호환성)
+        if (fallbackAdminEmail) {
+          adminEmails.push(fallbackAdminEmail)
+        }
+        
+        if (adminEmails.includes(user.email)) {
+          // 관리자 이메일인 경우 role을 admin으로 설정
+          try {
+            await prisma.user.update({
+              where: { email: user.email! },
+              data: { role: "admin" }
+            })
+            console.log("Admin role assigned to credentials user:", user.email)
+            user.role = "admin" // 세션에 반영
+          } catch (error) {
+            console.error("Error assigning admin role to credentials user:", error)
+          }
+        }
         console.log("Credentials login - user role:", user.role)
       }
       
