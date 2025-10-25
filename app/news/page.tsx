@@ -15,43 +15,6 @@ export const metadata: Metadata = {
 
 // 실제 데이터베이스에서 공지사항 가져오기
 
-const tabs = [
-  {
-    id: 'all',
-    label: '전체',
-    content: (
-      <div>
-        <div className="mb-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="제목, 내용으로 검색..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
-              />
-            </div>
-            <Button variant="outline">
-              검색
-            </Button>
-          </div>
-        </div>
-        <NoticeList notices={allNotices} showCategory={true} />
-      </div>
-    )
-  },
-  {
-    id: 'notice',
-    label: '공지사항',
-    content: <NoticeList notices={notices} />
-  },
-  {
-    id: 'press',
-    label: '보도자료',
-    content: <NoticeList notices={pressReleases} />
-  }
-]
-
 export default async function NewsPage() {
   // 실제 데이터베이스에서 공지사항 가져오기
   const noticesData = await prisma.notice.findMany({
@@ -93,6 +56,43 @@ export default async function NewsPage() {
   const allNotices = [...notices, ...pressReleases].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   )
+
+  const tabs = [
+    {
+      id: 'all',
+      label: '전체',
+      content: (
+        <div>
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="제목, 내용으로 검색..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                />
+              </div>
+              <Button variant="outline">
+                검색
+              </Button>
+            </div>
+          </div>
+          <NoticeList notices={allNotices} showCategory={true} />
+        </div>
+      )
+    },
+    {
+      id: 'notice',
+      label: '공지사항',
+      content: <NoticeList notices={notices} />
+    },
+    {
+      id: 'press',
+      label: '보도자료',
+      content: <NoticeList notices={pressReleases} />
+    }
+  ]
   return (
     <>
       {/* 페이지 헤더 */}
