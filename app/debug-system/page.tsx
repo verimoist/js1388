@@ -19,9 +19,9 @@ export default function DebugSystemPage() {
       })
 
       const result = await response.json()
-      setResults(prev => ({ ...prev, fileUpload: result }))
+      setResults((prev: any) => ({ ...prev, fileUpload: result }))
     } catch (error) {
-      setResults(prev => ({ ...prev, fileUpload: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, fileUpload: { error: error instanceof Error ? error.message : '알 수 없는 오류' } }))
     } finally {
       setLoading(false)
     }
@@ -35,9 +35,9 @@ export default function DebugSystemPage() {
       })
 
       const result = await response.json()
-      setResults(prev => ({ ...prev, pressAPI: result }))
+      setResults((prev: any) => ({ ...prev, pressAPI: result }))
     } catch (error) {
-      setResults(prev => ({ ...prev, pressAPI: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, pressAPI: { error: error instanceof Error ? error.message : '알 수 없는 오류' } }))
     } finally {
       setLoading(false)
     }
@@ -51,9 +51,9 @@ export default function DebugSystemPage() {
       })
 
       const result = await response.json()
-      setResults(prev => ({ ...prev, noticesAPI: result }))
+      setResults((prev: any) => ({ ...prev, noticesAPI: result }))
     } catch (error) {
-      setResults(prev => ({ ...prev, noticesAPI: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, noticesAPI: { error: error instanceof Error ? error.message : '알 수 없는 오류' } }))
     } finally {
       setLoading(false)
     }
@@ -67,9 +67,9 @@ export default function DebugSystemPage() {
       })
 
       const result = await response.json()
-      setResults(prev => ({ ...prev, auth: result }))
+      setResults((prev: any) => ({ ...prev, auth: result }))
     } catch (error) {
-      setResults(prev => ({ ...prev, auth: { error: error.message } }))
+      setResults((prev: any) => ({ ...prev, auth: { error: error instanceof Error ? error.message : '알 수 없는 오류' } }))
     } finally {
       setLoading(false)
     }
