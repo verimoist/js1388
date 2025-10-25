@@ -137,9 +137,8 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
                         </div>
                       </div>
                       <a
-                        href={attachment.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`/api/download/${attachment.url.split('/').pop()}`}
+                        download={attachment.name}
                         className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                       >
                         다운로드
