@@ -113,24 +113,34 @@ export default function NewNoticePage() {
     setLoading(true)
 
     try {
+      const submitData = {
+        ...formData,
+        ...(attachments.length > 0 && { attachments }),
+        ...(links.length > 0 && { links }),
+      }
+      
+      console.log('제출할 데이터:', submitData)
+      console.log('첨부파일 수:', attachments.length)
+      console.log('링크 수:', links.length)
+
       const response = await fetch("/api/notices", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          ...(attachments.length > 0 && { attachments }),
-          ...(links.length > 0 && { links }),
-        }),
+        body: JSON.stringify(submitData),
       })
 
+      console.log('응답 상태:', response.status)
+
       if (response.ok) {
+        const result = await response.json()
+        console.log('공지사항 생성 성공:', result)
         router.push("/admin/notices")
       } else {
         const error = await response.json()
         console.error("API Error:", error)
-        alert(`공지사항 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}`)
+        alert(`공지사항 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
       console.error("Error creating notice:", error)

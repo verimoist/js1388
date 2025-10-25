@@ -26,6 +26,15 @@ export default function DebugSystemPage() {
       })
 
       console.log('응답 상태:', response.status)
+      console.log('응답 헤더:', Object.fromEntries(response.headers.entries()))
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('응답 오류:', errorText)
+        setResults((prev: any) => ({ ...prev, fileUpload: { error: `HTTP ${response.status}: ${errorText}` } }))
+        return
+      }
+      
       const result = await response.json()
       console.log('응답 결과:', result)
       
@@ -105,13 +114,30 @@ export default function DebugSystemPage() {
       const pressData = await pressResponse.json()
       console.log('보도자료 데이터:', pressData)
 
+      // 첨부파일과 링크 정보 확인
+      const noticesWithAttachments = noticesData.notices?.filter(n => n.attachments && n.attachments.length > 0) || []
+      const noticesWithLinks = noticesData.notices?.filter(n => n.links && n.links.length > 0) || []
+      const pressWithAttachments = pressData.press?.filter(p => p.attachments && p.attachments.length > 0) || []
+      const pressWithLinks = pressData.press?.filter(p => p.links && p.links.length > 0) || []
+
+      console.log('첨부파일이 있는 공지사항:', noticesWithAttachments.length)
+      console.log('링크가 있는 공지사항:', noticesWithLinks.length)
+      console.log('첨부파일이 있는 보도자료:', pressWithAttachments.length)
+      console.log('링크가 있는 보도자료:', pressWithLinks.length)
+
       setResults((prev: any) => ({ 
         ...prev, 
         database: {
           notices: noticesData,
           press: pressData,
           noticesCount: noticesData.notices?.length || 0,
-          pressCount: pressData.press?.length || 0
+          pressCount: pressData.press?.length || 0,
+          attachmentsInfo: {
+            noticesWithAttachments: noticesWithAttachments.length,
+            noticesWithLinks: noticesWithLinks.length,
+            pressWithAttachments: pressWithAttachments.length,
+            pressWithLinks: pressWithLinks.length
+          }
         }
       }))
     } catch (error) {
