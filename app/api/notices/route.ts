@@ -81,16 +81,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = createNoticeSchema.parse(body)
 
+    const noticeData: any = {
+      title: validatedData.title,
+      content: validatedData.content,
+      category: validatedData.category,
+      published: validatedData.published,
+      authorId: session.user.id,
+    }
+
+    // attachments와 links가 있는 경우에만 추가
+    if (validatedData.attachments) {
+      noticeData.attachments = validatedData.attachments
+    }
+    if (validatedData.links) {
+      noticeData.links = validatedData.links
+    }
+
     const notice = await prisma.notice.create({
-      data: {
-        title: validatedData.title,
-        content: validatedData.content,
-        category: validatedData.category,
-        published: validatedData.published,
-        attachments: validatedData.attachments as any || null,
-        links: validatedData.links as any || null,
-        authorId: session.user.id,
-      },
+      data: noticeData,
       include: { author: { select: { name: true, email: true } } },
     })
 
