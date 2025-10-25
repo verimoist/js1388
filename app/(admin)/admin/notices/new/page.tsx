@@ -30,19 +30,37 @@ export default function NewNoticePage() {
   const [links, setLinks] = useState<LinkItem[]>([])
   const [newLink, setNewLink] = useState({ title: "", url: "", description: "" })
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
 
-    Array.from(files).forEach(file => {
-      const attachment: Attachment = {
-        name: file.name,
-        url: URL.createObjectURL(file), // 실제로는 서버에 업로드 후 URL 받아야 함
-        size: file.size,
-        type: file.type
+    for (const file of Array.from(files)) {
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          const attachment: Attachment = {
+            name: result.name,
+            url: result.url,
+            size: result.size,
+            type: result.type
+          }
+          setAttachments(prev => [...prev, attachment])
+        } else {
+          alert(`파일 업로드 실패: ${file.name}`)
+        }
+      } catch (error) {
+        console.error('파일 업로드 오류:', error)
+        alert(`파일 업로드 오류: ${file.name}`)
       }
-      setAttachments(prev => [...prev, attachment])
-    })
+    }
   }
 
   const removeAttachment = (index: number) => {
