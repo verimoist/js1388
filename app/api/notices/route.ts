@@ -38,16 +38,23 @@ export async function GET(request: NextRequest) {
         }
       : {}
 
+    const whereWithPublished = { published: true, ...where }
+    console.log('공지사항 조회 조건:', whereWithPublished)
+
     const [notices, total] = await Promise.all([
       prisma.notice.findMany({
-        where,
+        where: whereWithPublished,
         include: { author: { select: { name: true, email: true } } },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
-      prisma.notice.count({ where }),
+      prisma.notice.count({ where: whereWithPublished }),
     ])
+
+    console.log('조회된 공지사항 수:', notices.length)
+    console.log('총 공지사항 수:', total)
+    console.log('공지사항 카테고리 분포:', notices.map(n => n.category))
 
     return NextResponse.json({
       notices,
