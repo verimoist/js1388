@@ -38,15 +38,16 @@ export async function POST(request: NextRequest) {
       mkdirSync(uploadDir, { recursive: true })
     }
 
-    // 파일명 생성 (타임스탬프 + 원본 파일명)
+    // 파일명 생성 (타임스탬프 + 간단한 파일명)
     const timestamp = Date.now()
-    // 한글 파일명을 URL 인코딩으로 처리
-    const encodedFileName = encodeURIComponent(file.name)
-    const fileName = `${timestamp}-${encodedFileName}`
+    // 파일 확장자 추출
+    const fileExtension = file.name.split('.').pop() || 'bin'
+    // 간단한 파일명 생성 (한글 문제 방지)
+    const fileName = `${timestamp}.${fileExtension}`
     const filePath = join(uploadDir, fileName)
     console.log('파일 경로:', filePath)
     console.log('원본 파일명:', file.name)
-    console.log('인코딩된 파일명:', fileName)
+    console.log('생성된 파일명:', fileName)
 
     // 파일 저장
     try {

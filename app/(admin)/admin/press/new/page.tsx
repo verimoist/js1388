@@ -26,11 +26,16 @@ export default function NewPressPage() {
         body: JSON.stringify(formData),
       })
 
+      console.log('응답 상태:', response.status)
+      
       if (response.ok) {
+        const result = await response.json()
+        console.log('보도자료 생성 성공:', result)
         router.push("/admin/press")
       } else {
         const error = await response.json()
-        alert(error.error || "보도자료 생성에 실패했습니다.")
+        console.error('보도자료 생성 실패:', error)
+        alert(`보도자료 생성에 실패했습니다: ${error.error || '알 수 없는 오류'}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
       console.error("Error creating press:", error)

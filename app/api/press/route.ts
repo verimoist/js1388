@@ -64,9 +64,17 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('보도자료 생성 요청 시작')
+    
     const session = await getServerSession(authOptions)
+    console.log('세션 정보:', { 
+      user: session?.user?.email, 
+      role: session?.user?.role,
+      hasSession: !!session 
+    })
     
     if (!session || session.user.role !== "admin") {
+      console.log('관리자 권한 없음')
       return NextResponse.json(
         { error: "관리자 권한이 필요합니다" },
         { status: 403 }
@@ -74,7 +82,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    console.log('요청 데이터:', body)
+    
     const validatedData = createPressSchema.parse(body)
+    console.log('검증된 데이터:', validatedData)
 
     // 보도자료를 Notice 모델의 press 카테고리로 저장
     const noticeData: any = {
@@ -94,23 +105,33 @@ export async function POST(request: NextRequest) {
       }]
     }
 
+    console.log('데이터베이스 저장 시작:', noticeData)
+    
     const press = await prisma.notice.create({
       data: noticeData,
       include: { author: { select: { name: true, email: true } } },
     })
+    
+    console.log('보도자료 생성 완료:', press.id)
 
     return NextResponse.json(press, { status: 201 })
   } catch (error) {
+    console.error("보도자료 생성 오류:", error)
+    
     if (error instanceof z.ZodError) {
+      console.error("검증 오류:", error.issues)
       return NextResponse.json(
         { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
         { status: 400 }
       )
     }
     
-    console.error("Error creating press:", error)
     return NextResponse.json(
-      { error: "보도자료 생성에 실패했습니다" },
+      { 
+        error: "보도자료 생성에 실패했습니다",
+        details: error instanceof Error ? error.message : '알 수 없는 오류',
+        stack: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }
