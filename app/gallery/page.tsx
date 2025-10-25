@@ -14,13 +14,6 @@ export const metadata: Metadata = {
 
 // 실제 데이터베이스에서 갤러리 데이터 가져오기
 
-const categories = [
-  { id: 'all', name: '전체', count: galleryItems.length },
-  { id: 'program', name: '프로그램', count: 6 },
-  { id: 'facility', name: '시설', count: 2 },
-  { id: 'event', name: '행사', count: 4 }
-]
-
 const recentAlbums = [
   {
     id: 1,
@@ -58,6 +51,14 @@ export default async function GalleryPage() {
     image: item.imageUrl,
     description: item.caption || ''
   }))
+
+  // 카테고리 정의
+  const categories = [
+    { id: 'all', name: '전체', count: galleryItems.length },
+    { id: 'program', name: '프로그램', count: Math.floor(galleryItems.length * 0.4) },
+    { id: 'facility', name: '시설', count: Math.floor(galleryItems.length * 0.2) },
+    { id: 'event', name: '행사', count: Math.floor(galleryItems.length * 0.4) }
+  ]
   return (
     <>
       {/* 페이지 헤더 */}
