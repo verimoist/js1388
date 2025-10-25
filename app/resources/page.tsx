@@ -5,6 +5,7 @@ import Section from '../../components/ui/Section'
 import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import { SITE } from '../../lib/site'
+import { prisma } from '../../lib/prisma'
 
 export const metadata: Metadata = {
   title: `자료실 - ${SITE.name}`,
