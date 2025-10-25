@@ -92,44 +92,7 @@ const programs = [
 
 // 공지사항 데이터는 서버에서 가져옵니다
 
-const galleryItems = [
-  {
-    id: 1,
-    title: '청소년 캠프 활동',
-    image: '/assets/images/gallery1.jpg',
-    description: '자연 속에서 함께하는 청소년 캠프'
-  },
-  {
-    id: 2,
-    title: '상담실 내부',
-    image: '/assets/images/gallery2.jpg',
-    description: '편안하고 안전한 상담 공간'
-  },
-  {
-    id: 3,
-    title: '진로체험 활동',
-    image: '/assets/images/gallery3.jpg',
-    description: '다양한 직업을 체험해보는 시간'
-  },
-  {
-    id: 4,
-    title: '봉사활동',
-    image: '/assets/images/gallery4.jpg',
-    description: '지역사회를 위한 봉사활동'
-  },
-  {
-    id: 5,
-    title: '교육 프로그램',
-    image: '/assets/images/gallery5.jpg',
-    description: '참여형 교육 프로그램'
-  },
-  {
-    id: 6,
-    title: '센터 전경',
-    image: '/assets/images/gallery6.jpg',
-    description: `${SITE.name} 센터 전경`
-  }
-]
+// 실제 데이터베이스에서 갤러리 데이터 가져오기
 
 const partners = [
   { 
@@ -193,6 +156,20 @@ export default async function HomePage() {
     date: notice.createdAt.toLocaleDateString('ko-KR'),
     views: notice.views,
     category: notice.category as 'notice' | 'press'
+  }))
+
+  // 실제 데이터베이스에서 갤러리 데이터 가져오기
+  const galleryData = await prisma.galleryItem.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 6
+  })
+
+  // GalleryGrid 컴포넌트에 맞는 형식으로 변환
+  const galleryItems = galleryData.map(item => ({
+    id: item.id,
+    title: item.title,
+    image: item.imageUrl,
+    description: item.caption || ''
   }))
   return (
     <>
