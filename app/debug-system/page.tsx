@@ -115,10 +115,10 @@ export default function DebugSystemPage() {
       console.log('보도자료 데이터:', pressData)
 
       // 첨부파일과 링크 정보 확인
-      const noticesWithAttachments = noticesData.notices?.filter(n => n.attachments && n.attachments.length > 0) || []
-      const noticesWithLinks = noticesData.notices?.filter(n => n.links && n.links.length > 0) || []
-      const pressWithAttachments = pressData.press?.filter(p => p.attachments && p.attachments.length > 0) || []
-      const pressWithLinks = pressData.press?.filter(p => p.links && p.links.length > 0) || []
+      const noticesWithAttachments = noticesData.notices?.filter((n: any) => n.attachments && n.attachments.length > 0) || []
+      const noticesWithLinks = noticesData.notices?.filter((n: any) => n.links && n.links.length > 0) || []
+      const pressWithAttachments = pressData.press?.filter((p: any) => p.attachments && p.attachments.length > 0) || []
+      const pressWithLinks = pressData.press?.filter((p: any) => p.links && p.links.length > 0) || []
 
       console.log('첨부파일이 있는 공지사항:', noticesWithAttachments.length)
       console.log('링크가 있는 공지사항:', noticesWithLinks.length)
