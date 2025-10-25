@@ -14,8 +14,11 @@ interface PressDetailPageProps {
 }
 
 export async function generateMetadata({ params }: PressDetailPageProps): Promise<Metadata> {
-  const press = await prisma.press.findUnique({
-    where: { id: params.id },
+  const press = await prisma.notice.findUnique({
+    where: { 
+      id: params.id,
+      category: 'press' // 보도자료만 조회
+    },
     include: { author: { select: { name: true } } }
   })
 
@@ -32,8 +35,11 @@ export async function generateMetadata({ params }: PressDetailPageProps): Promis
 }
 
 export default async function PressDetailPage({ params }: PressDetailPageProps) {
-  const press = await prisma.press.findUnique({
-    where: { id: params.id },
+  const press = await prisma.notice.findUnique({
+    where: { 
+      id: params.id,
+      category: 'press' // 보도자료만 조회
+    },
     include: { 
       author: { 
         select: { 

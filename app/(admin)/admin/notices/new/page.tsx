@@ -164,18 +164,68 @@ export default function NewNoticePage() {
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-            카테고리
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+            카테고리 *
           </label>
-          <select
-            id="category"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value as "notice" | "press" })}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="notice">공지사항</option>
-            <option value="press">보도자료</option>
-          </select>
+          <div className="grid grid-cols-2 gap-4">
+            <div 
+              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                formData.category === 'notice' 
+                  ? 'border-blue-500 bg-blue-50' 
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}
+              onClick={() => setFormData({ ...formData, category: 'notice' })}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="notice"
+                  name="category"
+                  value="notice"
+                  checked={formData.category === 'notice'}
+                  onChange={() => setFormData({ ...formData, category: 'notice' })}
+                  className="mr-3"
+                />
+                <div>
+                  <label htmlFor="notice" className="font-medium text-gray-900 cursor-pointer">
+                    공지사항
+                  </label>
+                  <p className="text-sm text-gray-500 mt-1">
+                    센터 운영, 프로그램 안내 등
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div 
+              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                formData.category === 'press' 
+                  ? 'border-green-500 bg-green-50' 
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}
+              onClick={() => setFormData({ ...formData, category: 'press' })}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="press"
+                  name="category"
+                  value="press"
+                  checked={formData.category === 'press'}
+                  onChange={() => setFormData({ ...formData, category: 'press' })}
+                  className="mr-3"
+                />
+                <div>
+                  <label htmlFor="press" className="font-medium text-gray-900 cursor-pointer">
+                    보도자료
+                  </label>
+                  <p className="text-sm text-gray-500 mt-1">
+                    센터 성과, 언론 보도 등
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div>

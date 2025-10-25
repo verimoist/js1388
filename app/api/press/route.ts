@@ -27,15 +27,21 @@ export async function GET(request: NextRequest) {
         }
       : {}
 
+    // 보도자료는 Notice 모델의 press 카테고리에서 조회
+    const whereWithCategory = {
+      ...where,
+      category: 'press' // 보도자료만 조회
+    }
+
     const [press, total] = await Promise.all([
-      prisma.press.findMany({
-        where,
+      prisma.notice.findMany({
+        where: whereWithCategory,
         include: { author: { select: { name: true, email: true } } },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
-      prisma.press.count({ where }),
+      prisma.notice.count({ where: whereWithCategory }),
     ])
 
     return NextResponse.json({
@@ -70,11 +76,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = createPressSchema.parse(body)
 
-    const press = await prisma.press.create({
-      data: {
-        ...validatedData,
-        authorId: session.user.id,
-      },
+    // 보도자료를 Notice 모델의 press 카테고리로 저장
+    const noticeData: any = {
+      title: validatedData.title,
+      content: validatedData.content,
+      category: 'press', // 보도자료는 press 카테고리
+      published: validatedData.published,
+      authorId: session.user.id,
+    }
+
+    // sourceUrl이 있는 경우 links 필드에 추가
+    if (validatedData.sourceUrl) {
+      noticeData.links = [{
+        title: '원문 보기',
+        url: validatedData.sourceUrl,
+        description: '언론사 원문 링크'
+      }]
+    }
+
+    const press = await prisma.notice.create({
+      data: noticeData,
       include: { author: { select: { name: true, email: true } } },
     })
 

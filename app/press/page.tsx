@@ -14,9 +14,12 @@ export const metadata: Metadata = {
 }
 
 export default async function PressPage() {
-  // 실제 데이터베이스에서 보도자료 가져오기
-  const pressData = await prisma.press.findMany({
-    where: { published: true },
+  // 실제 데이터베이스에서 보도자료 가져오기 (Notice 모델의 press 카테고리)
+  const pressData = await prisma.notice.findMany({
+    where: { 
+      published: true,
+      category: 'press' // 보도자료만 조회
+    },
     orderBy: { createdAt: 'desc' },
     include: {
       author: {

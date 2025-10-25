@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
     const fileName = `${timestamp}-${safeFileName}`
     const filePath = join(uploadDir, fileName)
     console.log('파일 경로:', filePath)
+    console.log('원본 파일명:', file.name)
+    console.log('안전한 파일명:', fileName)
 
     // 파일 저장
     try {
