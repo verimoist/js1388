@@ -34,8 +34,11 @@ export default function NewNoticePage() {
     const files = e.target.files
     if (!files) return
 
+    console.log('파일 업로드 시작, 파일 수:', files.length)
+
     for (const file of Array.from(files)) {
       try {
+        console.log('파일 업로드 중:', file.name)
         const formData = new FormData()
         formData.append('file', file)
 
@@ -44,8 +47,11 @@ export default function NewNoticePage() {
           body: formData,
         })
 
+        console.log('업로드 응답 상태:', response.status)
+
         if (response.ok) {
           const result = await response.json()
+          console.log('업로드 성공:', result)
           const attachment: Attachment = {
             name: result.name,
             url: result.url,
@@ -54,11 +60,13 @@ export default function NewNoticePage() {
           }
           setAttachments(prev => [...prev, attachment])
         } else {
-          alert(`파일 업로드 실패: ${file.name}`)
+          const errorResult = await response.json()
+          console.error('업로드 실패:', errorResult)
+          alert(`파일 업로드 실패: ${file.name} - ${errorResult.error}`)
         }
       } catch (error) {
         console.error('파일 업로드 오류:', error)
-        alert(`파일 업로드 오류: ${file.name}`)
+        alert(`파일 업로드 오류: ${file.name} - ${error.message}`)
       }
     }
   }
