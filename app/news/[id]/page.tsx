@@ -112,6 +112,75 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
                 __html: notice.content.replace(/\n/g, '<br>') 
               }}
             />
+            
+            {/* 첨부파일 섹션 */}
+            {notice.attachments && Array.isArray(notice.attachments) && notice.attachments.length > 0 && (
+              <div className="mt-8 border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                  첨부파일
+                </h3>
+                <div className="space-y-2">
+                  {notice.attachments.map((attachment: any, index: number) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{attachment.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {(attachment.size / 1024).toFixed(1)} KB
+                          </p>
+                        </div>
+                      </div>
+                      <a
+                        href={attachment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
+                        다운로드
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* 링크 섹션 */}
+            {notice.links && Array.isArray(notice.links) && notice.links.length > 0 && (
+              <div className="mt-8 border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  관련 링크
+                </h3>
+                <div className="space-y-3">
+                  {notice.links.map((link: any, index: number) => (
+                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block hover:bg-gray-100 p-2 rounded transition-colors"
+                      >
+                        <h4 className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                          {link.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-1">{link.url}</p>
+                        {link.description && (
+                          <p className="text-sm text-gray-600 mt-2">{link.description}</p>
+                        )}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           {/* 하단 버튼 */}

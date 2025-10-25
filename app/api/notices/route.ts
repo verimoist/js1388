@@ -9,6 +9,17 @@ const createNoticeSchema = z.object({
   content: z.string().min(1, "내용은 필수입니다"),
   category: z.enum(["notice", "press"]).default("notice"),
   published: z.boolean().default(true),
+  attachments: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    size: z.number(),
+    type: z.string()
+  })).optional(),
+  links: z.array(z.object({
+    title: z.string(),
+    url: z.string(),
+    description: z.string().optional()
+  })).optional(),
 })
 
 export async function GET(request: NextRequest) {

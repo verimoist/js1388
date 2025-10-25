@@ -50,16 +50,18 @@ model Session {
 }
 
 model Notice {
-  id        String   @id @default(cuid())
-  title     String
-  content   String   @db.Text
-  category  String   @default("notice") // notice | press
-  views     Int      @default(0)
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  String?
-  author    User?    @relation("NoticeAuthor", fields: [authorId], references: [id])
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  category    String   @default("notice") // notice | press
+  views       Int      @default(0)
+  published   Boolean  @default(true)
+  attachments Json?    // 첨부파일 정보 [{name: string, url: string, size: number, type: string}]
+  links       Json?    // 링크 정보 [{title: string, url: string, description?: string}]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authorId    String?
+  author      User?    @relation("NoticeAuthor", fields: [authorId], references: [id])
 }
 
 model Press {
