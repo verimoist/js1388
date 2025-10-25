@@ -6,23 +6,37 @@ import { existsSync, mkdirSync } from 'fs'
 export async function POST(request: NextRequest) {
   try {
     console.log('파일 업로드 요청 시작')
-    console.log('요청 헤더:', Object.fromEntries(request.headers.entries()))
+    
+    // Vercel 제한사항 확인
+    const contentLength = request.headers.get('content-length')
+    if (contentLength && parseInt(contentLength) > 4.5 * 1024 * 1024) { // 4.5MB 제한
+      return NextResponse.json({ 
+        error: '파일 크기가 너무 큽니다. Vercel 무료 플랜은 4.5MB까지 지원합니다.',
+        maxSize: '4.5MB'
+      }, { status: 413 })
+    }
     
     const data = await request.formData()
-    console.log('FormData 파싱 완료')
-    console.log('FormData 키들:', Array.from(data.keys()))
-    
     const file: File | null = data.get('file') as unknown as File
+    
     console.log('파일 정보:', { 
       name: file?.name, 
       size: file?.size, 
       type: file?.type,
-      lastModified: file?.lastModified 
+      contentLength: contentLength
     })
 
     if (!file) {
-      console.log('파일이 없음 - FormData 내용:', Array.from(data.entries()))
       return NextResponse.json({ error: '파일이 없습니다.' }, { status: 400 })
+    }
+
+    // 파일 크기 제한 (4MB로 안전하게 설정)
+    const maxSize = 4 * 1024 * 1024 // 4MB
+    if (file.size > maxSize) {
+      return NextResponse.json({ 
+        error: `파일 크기가 너무 큽니다. 최대 ${maxSize / 1024 / 1024}MB까지 지원합니다.`,
+        maxSize: `${maxSize / 1024 / 1024}MB`
+      }, { status: 413 })
     }
 
     const bytes = await file.arrayBuffer()

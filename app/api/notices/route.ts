@@ -76,9 +76,17 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('공지사항 생성 요청 시작')
+    
     const session = await getServerSession(authOptions)
+    console.log('세션 정보:', { 
+      user: session?.user?.email, 
+      role: session?.user?.role,
+      hasSession: !!session 
+    })
     
     if (!session || session.user.role !== "admin") {
+      console.log('관리자 권한 없음')
       return NextResponse.json(
         { error: "관리자 권한이 필요합니다" },
         { status: 403 }
@@ -86,7 +94,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    console.log('요청 데이터:', body)
+    
     const validatedData = createNoticeSchema.parse(body)
+    console.log('검증된 데이터:', validatedData)
 
     const noticeData: any = {
       title: validatedData.title,
@@ -97,30 +108,41 @@ export async function POST(request: NextRequest) {
     }
 
     // attachments와 links가 있는 경우에만 추가
-    if (validatedData.attachments) {
+    if (validatedData.attachments && validatedData.attachments.length > 0) {
       noticeData.attachments = validatedData.attachments
+      console.log('첨부파일 추가:', validatedData.attachments.length, '개')
     }
-    if (validatedData.links) {
+    if (validatedData.links && validatedData.links.length > 0) {
       noticeData.links = validatedData.links
+      console.log('링크 추가:', validatedData.links.length, '개')
     }
+
+    console.log('데이터베이스 저장 시작:', noticeData)
 
     const notice = await prisma.notice.create({
       data: noticeData,
       include: { author: { select: { name: true, email: true } } },
     })
 
+    console.log('공지사항 생성 완료:', notice.id)
     return NextResponse.json(notice, { status: 201 })
   } catch (error) {
+    console.error("공지사항 생성 오류:", error)
+    
     if (error instanceof z.ZodError) {
+      console.error("검증 오류:", error.issues)
       return NextResponse.json(
         { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
         { status: 400 }
       )
     }
     
-    console.error("Error creating notice:", error)
     return NextResponse.json(
-      { error: "공지사항 생성에 실패했습니다" },
+      { 
+        error: "공지사항 생성에 실패했습니다",
+        details: error instanceof Error ? error.message : '알 수 없는 오류',
+        stack: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }

@@ -39,7 +39,7 @@ export default function NewNoticePage() {
     for (const file of Array.from(files)) {
       try {
         console.log('파일 업로드 중:', file.name)
-        
+
         // 파일 타입 검증 (이미지, 문서, 압축 파일 등 허용)
         const allowedTypes = [
           'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
@@ -48,16 +48,16 @@ export default function NewNoticePage() {
           'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
           'text/plain', 'application/zip', 'application/x-rar-compressed'
         ]
-        
+
         if (!allowedTypes.includes(file.type)) {
           alert(`지원하지 않는 파일 형식입니다: ${file.name} (${file.type})`)
           continue
         }
-        
-        // 파일 크기 제한 (10MB)
-        const maxSize = 10 * 1024 * 1024 // 10MB
+
+        // Vercel 제한사항 고려한 파일 크기 제한 (4MB)
+        const maxSize = 4 * 1024 * 1024 // 4MB (Vercel 무료 플랜 4.5MB 제한 고려)
         if (file.size > maxSize) {
-          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`)
+          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)\nVercel 무료 플랜은 4MB까지 지원합니다.`)
           continue
         }
         
