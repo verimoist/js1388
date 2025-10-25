@@ -7,7 +7,7 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Modal from './ui/Modal'
 
 interface GalleryItem {
-  id: number
+  id: string
   title: string
   image: string
   description?: string
