@@ -9,18 +9,29 @@ export default function DebugSystemPage() {
   const testFileUpload = async () => {
     setLoading(true)
     try {
-      const file = new File(["test content"], "test.txt", { type: "text/plain" })
+      console.log('파일 업로드 테스트 시작')
+      
+      // 실제 파일 생성 (한글 파일명 포함)
+      const file = new File(["테스트 파일 내용입니다."], "테스트파일.txt", { type: "text/plain" })
+      console.log('생성된 파일:', { name: file.name, size: file.size, type: file.type })
+      
       const formData = new FormData()
       formData.append('file', file)
+      console.log('FormData 생성 완료')
 
+      console.log('API 호출 시작')
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
 
+      console.log('응답 상태:', response.status)
       const result = await response.json()
+      console.log('응답 결과:', result)
+      
       setResults((prev: any) => ({ ...prev, fileUpload: result }))
     } catch (error) {
+      console.error('파일 업로드 테스트 오류:', error)
       setResults((prev: any) => ({ ...prev, fileUpload: { error: error instanceof Error ? error.message : '알 수 없는 오류' } }))
     } finally {
       setLoading(false)

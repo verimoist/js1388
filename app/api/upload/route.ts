@@ -6,15 +6,22 @@ import { existsSync, mkdirSync } from 'fs'
 export async function POST(request: NextRequest) {
   try {
     console.log('파일 업로드 요청 시작')
+    console.log('요청 헤더:', Object.fromEntries(request.headers.entries()))
     
     const data = await request.formData()
     console.log('FormData 파싱 완료')
+    console.log('FormData 키들:', Array.from(data.keys()))
     
     const file: File | null = data.get('file') as unknown as File
-    console.log('파일 정보:', { name: file?.name, size: file?.size, type: file?.type })
+    console.log('파일 정보:', { 
+      name: file?.name, 
+      size: file?.size, 
+      type: file?.type,
+      lastModified: file?.lastModified 
+    })
 
     if (!file) {
-      console.log('파일이 없음')
+      console.log('파일이 없음 - FormData 내용:', Array.from(data.entries()))
       return NextResponse.json({ error: '파일이 없습니다.' }, { status: 400 })
     }
 
@@ -40,21 +47,36 @@ export async function POST(request: NextRequest) {
     console.log('파일 경로:', filePath)
 
     // 파일 저장
-    await writeFile(filePath, buffer)
-    console.log('파일 저장 완료')
+    try {
+      await writeFile(filePath, buffer)
+      console.log('파일 저장 완료')
+      
+      // 파일이 실제로 저장되었는지 확인
+      if (!existsSync(filePath)) {
+        throw new Error('파일 저장 후 존재하지 않음')
+      }
+      
+      console.log('파일 저장 검증 완료')
+    } catch (writeError) {
+      console.error('파일 저장 오류:', writeError)
+      throw new Error(`파일 저장 실패: ${writeError instanceof Error ? writeError.message : '알 수 없는 오류'}`)
+    }
 
     // 파일 URL 반환
     const fileUrl = `/uploads/${fileName}`
     console.log('파일 URL:', fileUrl)
 
-    return NextResponse.json({
+    const response = {
       success: true,
       url: fileUrl,
       name: file.name, // 원본 파일명 유지
       size: file.size,
       type: file.type,
       originalName: file.name // 한글 파일명을 위한 원본 이름
-    })
+    }
+    
+    console.log('응답 데이터:', response)
+    return NextResponse.json(response)
 
   } catch (error) {
     console.error('파일 업로드 오류:', error)
