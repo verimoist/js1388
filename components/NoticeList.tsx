@@ -3,7 +3,7 @@ import { Calendar, Eye } from 'lucide-react';
 import Card from './ui/Card';
 
 interface Notice {
-  id: number
+  id: string
   title: string
   content: string
   date: string
