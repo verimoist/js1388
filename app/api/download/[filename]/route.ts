@@ -22,12 +22,12 @@ export async function GET(
     // 파일 읽기
     const fileBuffer = await readFile(filePath)
     
-    // 파일명에서 원본 이름 추출 (Base64 디코딩)
-    const base64Name = params.filename.split('-').slice(1).join('-')
+    // 파일명에서 원본 이름 추출 (URL 디코딩)
+    const encodedName = params.filename.split('-').slice(1).join('-')
     let originalName = 'download'
     
     try {
-      originalName = Buffer.from(base64Name, 'base64').toString('utf8')
+      originalName = decodeURIComponent(encodedName)
     } catch (error) {
       console.log('파일명 디코딩 실패, 기본 이름 사용')
     }

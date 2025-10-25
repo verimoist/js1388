@@ -11,8 +11,8 @@ export default function DebugSystemPage() {
     try {
       console.log('파일 업로드 테스트 시작')
       
-      // 실제 파일 생성 (한글 파일명 포함)
-      const file = new File(["테스트 파일 내용입니다."], "테스트파일.txt", { type: "text/plain" })
+      // 실제 파일 생성 (영문 파일명으로 테스트)
+      const file = new File(["test file content"], "testfile.txt", { type: "text/plain" })
       console.log('생성된 파일:', { name: file.name, size: file.size, type: file.type })
       
       const formData = new FormData()

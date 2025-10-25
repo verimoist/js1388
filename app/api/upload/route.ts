@@ -40,13 +40,13 @@ export async function POST(request: NextRequest) {
 
     // 파일명 생성 (타임스탬프 + 원본 파일명)
     const timestamp = Date.now()
-    // 한글 파일명을 안전하게 처리하기 위해 인코딩
-    const safeFileName = Buffer.from(file.name, 'utf8').toString('base64')
-    const fileName = `${timestamp}-${safeFileName}`
+    // 한글 파일명을 URL 인코딩으로 처리
+    const encodedFileName = encodeURIComponent(file.name)
+    const fileName = `${timestamp}-${encodedFileName}`
     const filePath = join(uploadDir, fileName)
     console.log('파일 경로:', filePath)
     console.log('원본 파일명:', file.name)
-    console.log('안전한 파일명:', fileName)
+    console.log('인코딩된 파일명:', fileName)
 
     // 파일 저장
     try {
@@ -82,8 +82,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('파일 업로드 오류:', error)
+    console.error('오류 스택:', error instanceof Error ? error.stack : 'No stack trace')
     return NextResponse.json(
-      { error: '파일 업로드에 실패했습니다.', details: error instanceof Error ? error.message : '알 수 없는 오류' },
+      { 
+        error: '파일 업로드에 실패했습니다.', 
+        details: error instanceof Error ? error.message : '알 수 없는 오류',
+        stack: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }
