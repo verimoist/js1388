@@ -11,6 +11,7 @@ import ProgramCard from '../components/ProgramCard'
 import HeroBanner from '../components/HeroBanner'
 import ScrollAnimation from '../components/ui/ScrollAnimation'
 import { SITE } from '../lib/site'
+import { prisma } from '../lib/prisma'
 
 export const metadata: Metadata = {
     title: `홈 - ${SITE.name}`,
@@ -89,32 +90,7 @@ const programs = [
   }
 ]
 
-const notices = [
-  {
-    id: 1,
-    title: '2024년 상반기 청소년 프로그램 참가자 모집',
-    content: '다양한 청소년 프로그램에 참가할 수 있는 기회입니다. 많은 관심과 참여 부탁드립니다.',
-    date: '2024.01.15',
-    views: 156,
-    category: 'notice' as const
-  },
-  {
-    id: 2,
-    title: '겨울방학 특별 프로그램 운영 안내',
-    content: '겨울방학을 맞아 특별히 준비한 다양한 프로그램을 운영합니다.',
-    date: '2024.01.10',
-    views: 89,
-    category: 'notice' as const
-  },
-  {
-    id: 3,
-    title: '센터 휴관일 안내 (설날 연휴)',
-    content: '설날 연휴 기간 중 센터 휴관 안내입니다.',
-    date: '2024.01.05',
-    views: 234,
-    category: 'notice' as const
-  }
-]
+// 공지사항 데이터는 서버에서 가져옵니다
 
 const galleryItems = [
   {
@@ -193,7 +169,31 @@ const partners = [
   }
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  // 실제 데이터베이스에서 공지사항 가져오기
+  const noticesData = await prisma.notice.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+    include: {
+      author: {
+        select: {
+          name: true,
+          email: true
+        }
+      }
+    }
+  })
+
+  // NoticeList 컴포넌트에 맞는 형식으로 변환
+  const notices = noticesData.map(notice => ({
+    id: notice.id,
+    title: notice.title,
+    content: notice.content,
+    date: notice.createdAt.toLocaleDateString('ko-KR'),
+    views: notice.views,
+    category: notice.category as 'notice' | 'press'
+  }))
   return (
     <>
       {/* 히어로 슬라이더 */}

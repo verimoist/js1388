@@ -6,86 +6,14 @@ import NoticeList from '../../components/NoticeList'
 import Tabs from '../../components/ui/Tabs'
 import Button from '../../components/ui/Button'
 import { SITE } from '../../lib/site'
+import { prisma } from '../../lib/prisma'
 
 export const metadata: Metadata = {
   title: `공지사항 - ${SITE.name}`,
   description: `${SITE.name}의 최신 공지사항과 보도자료를 확인하세요.`,
 }
 
-// 더미 데이터
-const notices = [
-  {
-    id: 1,
-    title: '2024년 상반기 청소년 프로그램 참가자 모집',
-    content: '다양한 청소년 프로그램에 참가할 수 있는 기회입니다. 많은 관심과 참여 부탁드립니다. 프로그램은 3월부터 시작되며, 신청은 2월 말까지 받습니다.',
-    date: '2024.01.15',
-    views: 156,
-    category: 'notice' as const
-  },
-  {
-    id: 2,
-    title: '겨울방학 특별 프로그램 운영 안내',
-    content: '겨울방학을 맞아 특별히 준비한 다양한 프로그램을 운영합니다. 학습지원, 체험활동, 문화프로그램 등이 준비되어 있습니다.',
-    date: '2024.01.10',
-    views: 89,
-    category: 'notice' as const
-  },
-  {
-    id: 3,
-    title: '센터 휴관일 안내 (설날 연휴)',
-    content: '설날 연휴 기간 중 센터 휴관 안내입니다. 2월 9일(금)부터 2월 12일(월)까지 휴관하며, 2월 13일(화)부터 정상 운영됩니다.',
-    date: '2024.01.05',
-    views: 234,
-    category: 'notice' as const
-  },
-  {
-    id: 4,
-    title: '2024년 신규 상담사 채용 공고',
-    content: `${SITE.name}에서 함께할 열정적인 상담사를 모집합니다. 상담 관련 자격증 보유자 우대하며, 자세한 내용은 첨부파일을 확인해주세요.`,
-    date: '2024.01.03',
-    views: 312,
-    category: 'notice' as const
-  },
-  {
-    id: 5,
-    title: '진로체험센터 신규 프로그램 오픈',
-    content: '다양한 직업을 체험할 수 있는 새로운 프로그램이 추가되었습니다. IT, 의료, 교육, 예술 분야의 체험 프로그램을 운영합니다.',
-    date: '2023.12.28',
-    views: 178,
-    category: 'notice' as const
-  }
-]
-
-const pressReleases = [
-  {
-    id: 6,
-    title: '지역사회 복지 서비스 확대를 위한 MOU 체결',
-    content: `${SITE.name}이 지역사회 복지 서비스 확대를 위해 관련 기관과 업무협약을 체결했습니다. 이를 통해 더욱 체계적이고 전문적인 서비스를 제공할 예정입니다.`,
-    date: '2024.01.12',
-    views: 95,
-    category: 'press' as const
-  },
-  {
-    id: 7,
-    title: '청소년 진로상담 프로그램 성과 발표',
-    content: '2023년 청소년 진로상담 프로그램의 성과가 발표되었습니다. 참가자 만족도 95%를 기록하며, 높은 성과를 거두었습니다.',
-    date: '2024.01.08',
-    views: 142,
-    category: 'press' as const
-  },
-  {
-    id: 8,
-    title: '디지털 전환을 통한 서비스 혁신',
-    content: '코로나19 이후 디지털 전환을 통해 온라인 상담 및 교육 서비스를 도입했습니다. 이를 통해 접근성이 크게 향상되었습니다.',
-    date: '2023.12.20',
-    views: 203,
-    category: 'press' as const
-  }
-]
-
-const allNotices = [...notices, ...pressReleases].sort((a, b) => 
-  new Date(b.date).getTime() - new Date(a.date).getTime()
-)
+// 실제 데이터베이스에서 공지사항 가져오기
 
 const tabs = [
   {
@@ -124,7 +52,47 @@ const tabs = [
   }
 ]
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  // 실제 데이터베이스에서 공지사항 가져오기
+  const noticesData = await prisma.notice.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      author: {
+        select: {
+          name: true,
+          email: true
+        }
+      }
+    }
+  })
+
+  // 공지사항과 보도자료 분리
+  const notices = noticesData
+    .filter(notice => notice.category === 'notice')
+    .map(notice => ({
+      id: notice.id,
+      title: notice.title,
+      content: notice.content,
+      date: notice.createdAt.toLocaleDateString('ko-KR'),
+      views: notice.views,
+      category: notice.category as 'notice' | 'press'
+    }))
+
+  const pressReleases = noticesData
+    .filter(notice => notice.category === 'press')
+    .map(notice => ({
+      id: notice.id,
+      title: notice.title,
+      content: notice.content,
+      date: notice.createdAt.toLocaleDateString('ko-KR'),
+      views: notice.views,
+      category: notice.category as 'notice' | 'press'
+    }))
+
+  const allNotices = [...notices, ...pressReleases].sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
   return (
     <>
       {/* 페이지 헤더 */}
