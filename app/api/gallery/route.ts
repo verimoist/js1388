@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { galleryCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
+import { revalidateTag, revalidatePath } from 'next/cache'
 
 export async function GET(request: NextRequest) {
   try {
@@ -77,6 +78,12 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('갤러리 항목 생성 완료:', galleryItem.id)
+    
+    // 캐시 무효화
+    revalidateTag('gallery')
+    revalidatePath('/')
+    revalidatePath('/gallery')
+
     return NextResponse.json(galleryItem, { status: 201 })
   } catch (error) {
     console.error("갤러리 항목 생성 오류:", error)

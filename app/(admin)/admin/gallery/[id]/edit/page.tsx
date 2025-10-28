@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import FileUpload from "@/components/admin/FileUpload"
 
 interface Attachment {
   name: string
@@ -11,15 +10,53 @@ interface Attachment {
   type: string
 }
 
-export default function NewGalleryPage() {
+interface GalleryItem {
+  id: string
+  title: string
+  caption: string
+  imageUrl: string
+  attachments: Attachment[]
+}
+
+export default function EditGalleryPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
   const [formData, setFormData] = useState({
     title: "",
     caption: "",
     imageUrl: "",
   })
   const [attachments, setAttachments] = useState<Attachment[]>([])
+  const [removedAttachments, setRemovedAttachments] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchGalleryItem = async () => {
+      try {
+        const response = await fetch(`/api/gallery/${params.id}`)
+        if (response.ok) {
+          const item: GalleryItem = await response.json()
+          setFormData({
+            title: item.title,
+            caption: item.caption || "",
+            imageUrl: item.imageUrl,
+          })
+          setAttachments(item.attachments || [])
+        } else {
+          alert("갤러리 항목을 불러오는데 실패했습니다.")
+          router.push("/admin/gallery")
+        }
+      } catch (error) {
+        console.error("Error fetching gallery item:", error)
+        alert("갤러리 항목을 불러오는데 실패했습니다.")
+        router.push("/admin/gallery")
+      } finally {
+        setLoadingData(false)
+      }
+    }
+
+    fetchGalleryItem()
+  }, [params.id, router])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -59,6 +96,10 @@ export default function NewGalleryPage() {
   }
 
   const removeAttachment = (index: number) => {
+    const attachment = attachments[index]
+    if (attachment.url) {
+      setRemovedAttachments(prev => [...prev, attachment.url])
+    }
     setAttachments(prev => prev.filter((_, i) => i !== index))
   }
 
@@ -67,17 +108,23 @@ export default function NewGalleryPage() {
     setLoading(true)
 
     try {
+      // 기존 첨부파일에서 제거된 것들을 제외하고 새로 업로드된 것들과 병합
+      const finalAttachments = attachments.filter(attachment => 
+        !removedAttachments.includes(attachment.url)
+      )
+
       const submitData = {
         title: formData.title,
         caption: formData.caption,
         imageUrl: formData.imageUrl,
-        attachments: attachments
+        attachments: finalAttachments
       }
       
-      console.log('갤러리 제출 데이터:', submitData)
+      console.log('수정할 데이터:', submitData)
+      console.log('제거된 첨부파일:', removedAttachments)
 
-      const response = await fetch("/api/gallery", {
-        method: "POST",
+      const response = await fetch(`/api/gallery/${params.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -88,11 +135,12 @@ export default function NewGalleryPage() {
         router.push("/admin/gallery")
       } else {
         const error = await response.json()
-        alert(`갤러리 항목 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
+        console.error("API Error:", error)
+        alert(`갤러리 항목 수정에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
-      console.error("Error creating gallery item:", error)
-      alert("갤러리 항목 생성에 실패했습니다.")
+      console.error("Error updating gallery item:", error)
+      alert("갤러리 항목 수정에 실패했습니다.")
     } finally {
       setLoading(false)
     }
@@ -102,11 +150,15 @@ export default function NewGalleryPage() {
     setFormData({ ...formData, imageUrl: url })
   }
 
+  if (loadingData) {
+    return <div className="flex justify-center items-center h-64">로딩 중...</div>
+  }
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">새 갤러리 항목 추가</h1>
-        <p className="text-gray-600">이미지를 업로드하고 정보를 입력하세요.</p>
+        <h1 className="text-2xl font-bold text-gray-900">갤러리 항목 수정</h1>
+        <p className="text-gray-600">이미지와 정보를 수정하세요.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -189,43 +241,35 @@ export default function NewGalleryPage() {
               <div className="border border-gray-300 rounded-lg p-4">
                 <img
                   src={formData.imageUrl}
-                  alt="업로드된 이미지"
-                  className="max-w-full h-48 object-cover rounded"
+                  alt="미리보기"
+                  className="max-w-full h-64 object-contain mx-auto"
                 />
-                <p className="text-sm text-gray-600 mt-2">업로드 완료</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, imageUrl: "" })}
-                className="text-red-600 hover:text-red-800 text-sm"
-              >
-                이미지 제거
-              </button>
+              <div className="text-sm text-gray-600">
+                현재 이미지: {formData.imageUrl}
+              </div>
             </div>
           ) : (
-            <FileUpload
-              onUpload={handleFileUploadForImage}
-              accept="image/*"
-              maxSize={10}
-              folder="gallery"
-            />
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <p className="text-gray-500">이미지를 업로드하세요</p>
+            </div>
           )}
         </div>
 
         <div className="flex justify-end space-x-3">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin/gallery")}
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
             취소
           </button>
           <button
             type="submit"
-            disabled={loading || !formData.imageUrl}
+            disabled={loading}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? "저장 중..." : "저장"}
+            {loading ? "수정 중..." : "수정"}
           </button>
         </div>
       </form>

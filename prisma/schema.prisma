@@ -81,7 +81,7 @@ model GalleryItem {
   title       String
   imageUrl    String
   caption     String?
-  attachments Json?    @default("[]") // 첨부파일 정보
+  attachments Json     @default("[]") // 첨부파일 정보
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
