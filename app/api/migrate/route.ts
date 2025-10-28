@@ -33,7 +33,12 @@ export async function POST(request: Request) {
     console.log('✅ 데이터베이스 연결 성공')
 
     // GalleryItem 테이블 스키마 확인
-    const galleryColumns = await prisma.$queryRaw`
+    const galleryColumns = await prisma.$queryRaw<Array<{
+      column_name: string;
+      data_type: string;
+      is_nullable: string;
+      column_default: string | null;
+    }>>`
       SELECT column_name, data_type, is_nullable, column_default 
       FROM information_schema.columns 
       WHERE table_name = 'GalleryItem' 
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
     
     console.log('GalleryItem 테이블 컬럼들:', galleryColumns)
 
-    const attachmentsColumn = galleryColumns.find((col: any) => col.column_name === 'attachments')
+    const attachmentsColumn = galleryColumns.find((col) => col.column_name === 'attachments')
     
     return NextResponse.json({
       success: true,
@@ -75,14 +80,19 @@ export async function GET(request: Request) {
     await prisma.$queryRaw`SELECT 1`
     
     // GalleryItem 테이블 스키마 확인
-    const galleryColumns = await prisma.$queryRaw`
+    const galleryColumns = await prisma.$queryRaw<Array<{
+      column_name: string;
+      data_type: string;
+      is_nullable: string;
+      column_default: string | null;
+    }>>`
       SELECT column_name, data_type, is_nullable, column_default 
       FROM information_schema.columns 
       WHERE table_name = 'GalleryItem' 
       ORDER BY ordinal_position
     `
     
-    const attachmentsColumn = galleryColumns.find((col: any) => col.column_name === 'attachments')
+    const attachmentsColumn = galleryColumns.find((col) => col.column_name === 'attachments')
     
     return NextResponse.json({
       success: true,
