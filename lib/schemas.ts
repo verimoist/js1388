@@ -1,5 +1,8 @@
 import { z } from "zod"
 
+// 빈 문자열을 undefined로 변환하는 전처리 함수
+const emptyToUndefined = (v: unknown) => (typeof v === 'string' && v.trim() === '' ? undefined : v)
+
 // 공통 첨부파일 스키마
 export const attachmentSchema = z.object({
   name: z.string().min(1, "파일명은 필수입니다"),
@@ -21,18 +24,19 @@ export const noticeCreateSchema = z.object({
   content: z.string().min(1, "내용은 필수입니다").max(10000, "내용은 10000자 이하여야 합니다"),
   category: z.enum(["notice", "press"]).default("notice"),
   published: z.boolean().default(true),
-  attachments: z.array(attachmentSchema).default([]),
-  links: z.array(linkSchema).default([])
+  imageUrl: z.preprocess(emptyToUndefined, z.string().url().optional()),
+  attachments: z.array(attachmentSchema).optional().default([]),
+  links: z.array(linkSchema).optional().default([])
 })
 
 // 보도자료 생성 스키마
 export const pressCreateSchema = z.object({
   title: z.string().min(1, "제목은 필수입니다").max(200, "제목은 200자 이하여야 합니다"),
   content: z.string().min(1, "내용은 필수입니다").max(10000, "내용은 10000자 이하여야 합니다"),
-  sourceUrl: z.string().url("올바른 URL 형식이어야 합니다").optional(),
+  sourceUrl: z.preprocess(emptyToUndefined, z.string().url().optional()),
   published: z.boolean().default(true),
-  attachments: z.array(attachmentSchema).default([]),
-  links: z.array(linkSchema).default([])
+  attachments: z.array(attachmentSchema).optional().default([]),
+  links: z.array(linkSchema).optional().default([])
 })
 
 // 갤러리 생성 스키마

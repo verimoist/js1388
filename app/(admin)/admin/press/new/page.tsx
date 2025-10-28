@@ -69,6 +69,7 @@ export default function NewPressPage() {
         const formData = new FormData()
         formData.append('file', file)
         formData.append('folder', 'press') // 보도자료 폴더
+        console.log('FormData에 파일 추가 완료 - folder: press')
 
         const response = await fetch('/api/upload', {
           method: 'POST',

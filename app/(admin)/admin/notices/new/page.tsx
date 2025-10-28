@@ -78,7 +78,7 @@ export default function NewNoticePage() {
         const formData = new FormData()
         formData.append('file', file)
         formData.append('folder', 'notice') // 공지사항 폴더
-        console.log('FormData에 파일 추가 완료')
+        console.log('FormData에 파일 추가 완료 - folder: notice')
 
         console.log('API 호출 시작:', '/api/upload')
         const response = await fetch('/api/upload', {

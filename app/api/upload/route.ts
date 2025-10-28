@@ -76,14 +76,14 @@ export async function POST(request: NextRequest) {
 
     // 파일과 폴더 추출
     const file = formData.get('file') as File
-    const folder = formData.get('folder') as string
+    const rawFolder = formData.get('folder') as string
 
     // 상세 로그 정보 수집
     const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
     
     console.log('업로드 요청 정보:', {
-      folder: folder,
+      rawFolder: rawFolder,
       filename: file?.name,
       size: file?.size,
       contentType: file?.type,
@@ -100,16 +100,43 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 폴더 유효성 확인
-    if (!folder || !ALLOWED_FOLDERS.includes(folder as FolderType)) {
+    // 폴더 유효성 확인 및 폴백 처리
+    const allowed = new Set(['notice', 'press', 'gallery', 'resources'])
+    let folder = (rawFolder || '').toString().trim()
+    
+    // 폴더가 없거나 유효하지 않은 경우 referer에서 유추
+    if (!allowed.has(folder)) {
+      const referer = request.headers.get('referer') || ''
+      console.log('폴더 유효성 실패, referer에서 유추:', { folder, referer })
+      
+      if (referer.includes('/admin/press')) {
+        folder = 'press'
+        console.log('referer 기반 폴더 설정: press')
+      } else if (referer.includes('/admin/notices')) {
+        folder = 'notice'
+        console.log('referer 기반 폴더 설정: notice')
+      } else if (referer.includes('/admin/gallery')) {
+        folder = 'gallery'
+        console.log('referer 기반 폴더 설정: gallery')
+      } else if (referer.includes('/admin/resources')) {
+        folder = 'resources'
+        console.log('referer 기반 폴더 설정: resources')
+      }
+    }
+    
+    if (!allowed.has(folder)) {
       console.error('지원하지 않는 폴더:', folder)
       return NextResponse.json(
         { 
-          error: `지원하지 않는 폴더입니다. 허용되는 폴더: ${ALLOWED_FOLDERS.join(', ')}` 
+          error: `지원하지 않는 폴더입니다: ${folder}`, 
+          allowed: Array.from(allowed),
+          received: rawFolder
         },
         { status: 400 }
       )
     }
+    
+    console.log('최종 폴더 확인:', folder)
 
     // 파일 크기 확인
     if (file.size > MAX_FILE_SIZE) {
@@ -135,18 +162,36 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 파일명 생성 (타임스탬프 + 원본 파일명)
-    const timestamp = Date.now()
-    const fileExtension = file.name.split('.').pop() || 'bin'
-    const fileName = `${folder}/${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+    // 파일명 sanitize (한글/공백 허용하되, 스토리지 경로는 안전하게)
+    const originalName = file.name || 'upload.bin'
+    const base = originalName.split('.').slice(0, -1).join('.') || 'file'
+    const ext = originalName.includes('.') ? '.' + originalName.split('.').pop() : ''
     
-    console.log('업로드할 파일명:', fileName)
+    // 한글, 영문, 숫자, 일부 특수문자만 허용하고 공백을 하이픈으로 변환
+    const safeBase = base
+      .normalize('NFC')
+      .replace(/[^0-9A-Za-z가-힣._ -]/g, '')     // 허용 문자만 남기기
+      .replace(/\s+/g, '-')                      // 공백을 하이픈으로 변환
+      .slice(0, 100) || 'file'                   // 길이 제한
+    
+    const timestamp = Date.now()
+    const safeName = `${timestamp}-${safeBase}${ext}`
+    const pathname = `/${folder}/${safeName}`
+    
+    console.log('파일명 처리:', {
+      originalName,
+      safeBase,
+      ext,
+      safeName,
+      pathname
+    })
     console.log('Vercel Blob 업로드 시작')
 
     // Vercel Blob에 파일 업로드
-    const blob = await put(fileName, file, {
+    const blob = await put(pathname, file, {
       access: 'public',
       token: token,
+      contentType: file.type || 'application/octet-stream'
     })
 
     console.log('Vercel Blob 업로드 완료:', {
@@ -161,9 +206,9 @@ export async function POST(request: NextRequest) {
       url: blob.url,
       downloadUrl: blob.downloadUrl,
       pathname: blob.pathname,
-      contentType: blob.contentType,
-      size: file.size, // 원본 파일 크기 사용
-      originalName: file.name
+      contentType: file.type || 'application/octet-stream',
+      size: file.size,
+      originalName: originalName
     })
 
   } catch (error) {
