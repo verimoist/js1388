@@ -34,9 +34,15 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user?.email) {
-        const u = await prisma.user.findUnique({ where: { email: user.email } });
-        token.role = (u as any)?.role ?? "USER";
-        token.approved = (u as any)?.approved ?? (u as any)?.adminApproved ?? false;
+        try {
+          const u = await prisma.user.findUnique({ where: { email: user.email } });
+          token.role = (u as any)?.role ?? "USER";
+          token.approved = (u as any)?.approved ?? false;
+        } catch (error) {
+          console.error("JWT callback error:", error);
+          token.role = "USER";
+          token.approved = false;
+        }
       }
       return token;
     },
@@ -47,17 +53,33 @@ export default NextAuth({
     },
     async signIn({ user, account }) {
       if (account?.provider === "github") {
-        // 유저가 없으면 생성(PrismaAdapter가 처리). 승인은 관리자에서 하게 둔다.
-        // 로그인 자체는 허용하고 /admin 접근은 middleware가 막는다.
-        return true;
+        try {
+          // GitHub 사용자가 이미 존재하는지 확인
+          const existingUser = await prisma.user.findUnique({ 
+            where: { email: user.email! } 
+          });
+          
+          if (!existingUser) {
+            // 새 사용자 생성 (PrismaAdapter가 처리하지만 추가 설정)
+            console.log("Creating new GitHub user:", user.email);
+          } else {
+            console.log("Existing GitHub user:", user.email);
+          }
+          
+          return true;
+        } catch (error) {
+          console.error("GitHub signIn error:", error);
+          return true; // 오류가 있어도 로그인 허용
+        }
       }
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // 로그인 후 기본 대시보드로
+      // 로그인 후 홈페이지로
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       return baseUrl + "/"; 
     },
   },
   pages: { signIn: "/auth/signin", error: "/auth/signin" },
+  debug: process.env.NODE_ENV === "development",
 });
