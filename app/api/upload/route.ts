@@ -42,13 +42,16 @@ export async function POST(request: NextRequest) {
     console.log('요청 헤더:', Object.fromEntries(request.headers.entries()))
 
     // BLOB_READ_WRITE_TOKEN 확인
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    const token = process.env.BLOB_READ_WRITE_TOKEN
+    if (!token) {
       console.error('Missing BLOB_READ_WRITE_TOKEN')
       return NextResponse.json(
         { error: 'Missing BLOB_READ_WRITE_TOKEN' },
-        { status: 401 }
+        { status: 500 }
       )
     }
+    
+    console.log('BLOB_READ_WRITE_TOKEN 존재:', !!token, '길이:', token?.length || 0)
 
     // Content-Length 확인
     const contentLength = request.headers.get('content-length')
@@ -143,7 +146,7 @@ export async function POST(request: NextRequest) {
     // Vercel Blob에 파일 업로드
     const blob = await put(fileName, file, {
       access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      token: token,
     })
 
     console.log('Vercel Blob 업로드 완료:', {

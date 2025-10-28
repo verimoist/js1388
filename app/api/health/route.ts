@@ -43,12 +43,23 @@ export async function GET(request: Request) {
     console.log('NextAuth 설정 상태:', nextAuthStatus ? '✅ 완료' : '❌ 미완료')
 
     // 3. Vercel Blob 토큰 확인
-    const blobStatus = !!process.env.BLOB_READ_WRITE_TOKEN
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    const blobStatus = !!blobToken
     console.log('Vercel Blob 토큰 상태:', blobStatus ? '✅ 설정됨' : '❌ 미설정')
+    console.log('Blob 토큰 길이:', blobToken?.length || 0)
+    console.log('Blob 토큰 접두사:', blobToken?.substring(0, 10) || 'N/A')
 
     // 4. 관리자 이메일 설정 확인
     const adminStatus = !!(process.env.ADMIN_EMAIL || process.env.ADMIN_EMAILS)
     console.log('관리자 이메일 설정 상태:', adminStatus ? '✅ 설정됨' : '❌ 미설정')
+
+    // 5. 환경 정보
+    const envInfo = {
+      nodeEnv: process.env.NODE_ENV || 'development',
+      vercelEnv: process.env.VERCEL_ENV || 'local',
+      nextPublicVercelEnv: process.env.NEXT_PUBLIC_VERCEL_ENV || 'local'
+    }
+    console.log('환경 정보:', envInfo)
 
     const healthStatus = {
       status: 'ok',
@@ -59,7 +70,12 @@ export async function GET(request: Request) {
         vercelBlob: blobStatus,
         adminConfig: adminStatus
       },
-      environment: process.env.NODE_ENV || 'development',
+      environment: envInfo,
+      blobTokenInfo: {
+        exists: blobStatus,
+        length: blobToken?.length || 0,
+        prefix: blobToken?.substring(0, 10) || 'N/A'
+      },
       cacheInvalidation: invalidateTag ? {
         tag: invalidateTag,
         success: true,

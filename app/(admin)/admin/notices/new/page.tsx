@@ -147,6 +147,7 @@ export default function NewNoticePage() {
       console.log('제출할 데이터:', submitData)
       console.log('첨부파일 수:', attachments.length)
       console.log('링크 수:', links.length)
+      console.log('첨부파일 상세:', attachments)
 
       const response = await fetch("/api/notices", {
         method: "POST",

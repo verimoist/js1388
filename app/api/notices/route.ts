@@ -104,8 +104,12 @@ export async function POST(request: NextRequest) {
     
     // 캐시 무효화
     revalidateTag('notices')
+    if (validatedData.category === 'press') {
+      revalidateTag('press')
+    }
     revalidatePath('/')
     revalidatePath('/news')
+    revalidatePath('/press')
     
     return NextResponse.json(notice, { status: 201 })
   } catch (error) {
