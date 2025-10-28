@@ -24,7 +24,6 @@ export const noticeCreateSchema = z.object({
   content: z.string().min(1, "내용은 필수입니다").max(10000, "내용은 10000자 이하여야 합니다"),
   category: z.enum(["notice", "press"]).default("notice"),
   published: z.boolean().default(true),
-  imageUrl: z.preprocess(emptyToUndefined, z.string().url().optional()),
   attachments: z.array(AttachmentSchema).optional().default([]),
   links: z.array(linkSchema).optional().default([])
 })

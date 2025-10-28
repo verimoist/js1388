@@ -155,7 +155,7 @@ export default async function HomePage() {
   const galleryItems = galleryData.map(item => ({
     id: item.id,
     title: item.title,
-    image: item.imageUrl,
+    image: item.imageUrl || '/assets/images/placeholder.svg', // imageUrl이 없으면 기본 이미지 사용
     description: item.caption || ''
   }))
   return (

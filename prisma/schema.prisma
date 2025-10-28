@@ -55,7 +55,6 @@ model Notice {
   category    String   @default("notice") // notice | press
   views       Int      @default(0)
   published   Boolean  @default(true)
-  imageUrl    String?  // 대표 이미지 URL
   attachments Json?    @default("[]") // 첨부파일 정보 [{name: string, url: string, size: number, type: string}]
   links       Json?    @default("[]") // 링크 정보 [{title: string, url: string, description?: string}]
   createdAt   DateTime @default(now())
