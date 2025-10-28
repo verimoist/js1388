@@ -7,8 +7,7 @@ interface User {
   email: string
   name: string | null
   role: string
-  status: string
-  adminApproved: boolean
+  approved: boolean
   createdAt: string
 }
 
@@ -93,7 +92,7 @@ export default function PendingUsersPage() {
                     </div>
                     <div className="text-sm text-gray-400">
                       <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
-                        {user.status}
+                        승인대기
                       </span>
                       <span className="ml-2">role: {user.role}</span>
                     </div>

@@ -15,8 +15,7 @@ async function main() {
       where: { email },
       update: {
         role: "ADMIN",
-        status: "ACTIVE",
-        adminApproved: true,
+        approved: true,
         passwordHash,
       },
       create: {
@@ -24,16 +23,14 @@ async function main() {
         name,
         passwordHash,
         role: "ADMIN",
-        status: "ACTIVE",
-        adminApproved: true,
+        approved: true,
       },
     });
 
     console.log("✅ 관리자 계정 적용 완료:");
     console.log(`Email: ${user.email}`);
     console.log(`Role: ${user.role}`);
-    console.log(`Status: ${user.status}`);
-    console.log(`Admin Approved: ${user.adminApproved}`);
+    console.log(`Approved: ${user.approved}`);
     console.log(`Password: ${plainPassword}`);
   } catch (error) {
     console.error("❌ 관리자 권한 부여 중 오류:", error);

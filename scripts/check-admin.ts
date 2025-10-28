@@ -17,16 +17,15 @@ async function main() {
     id: u.id,
     email: u.email,
     role: u.role,
-    adminApproved: (u as any).adminApproved ?? false,
-    status: (u as any).status ?? "UNKNOWN",
-    passwordHashLen: (u as any).passwordHash?.length ?? 0,
+    approved: u.approved ?? false,
+    passwordHashLen: u.passwordHash?.length ?? 0,
   });
 
-  if (!(u as any).passwordHash) {
+  if (!u.passwordHash) {
     console.log("NO_HASH");
     return;
   }
-  const ok = await bcrypt.compare(pwd, (u as any).passwordHash);
+  const ok = await bcrypt.compare(pwd, u.passwordHash);
   console.log("BCRYPT_COMPARE:", ok);
 }
 

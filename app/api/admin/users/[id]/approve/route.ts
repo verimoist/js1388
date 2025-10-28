@@ -8,13 +8,11 @@ export async function POST(req: Request, { params }: { params: { id: string }}) 
   
   const data = approve
     ? { 
-        status: "ACTIVE" as const, 
-        adminApproved: true, 
+        approved: true, 
         role: makeAdmin ? "ADMIN" as const : "USER" as const 
       }
     : { 
-        status: "REJECTED" as const, 
-        adminApproved: false 
+        approved: false 
       }
     
   const user = await prisma.user.update({ 

@@ -21,44 +21,20 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("[AUTH] authorize start", credentials?.email);
-        
         if (!credentials?.email || !credentials?.password) return null;
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user) return null;
-
-        const hash = (user as any).passwordHash;
-        if (!hash) return null;
-
-        const ok = await bcrypt.compare(credentials.password, hash);
-        console.log("[AUTH] bcrypt result", ok);
-        
+        if (!user || !user.passwordHash) return null;
+        const ok = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!ok) return null;
-
-        // 관리자 승인/권한 체크
-        const approved = (user as any).adminApproved ?? false;
-        const role = (user as any).role ?? "USER";
-        console.log("[AUTH] user role/approved", role, approved);
-        
-        if (!approved || role !== "ADMIN") {
-          // 승인되지 않은 계정은 거부
-          return null;
-        }
-
-        return {
-          id: user.id,
-          name: user.name ?? "",
-          email: user.email,
-          role: (user as any).role,
-        } as any;
+        // 승인된 계정만 로그인 허용
+        if (!user.approved) return null;
+        return { id: user.id, email: user.email, name: user.name ?? "", role: user.role } as any;
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }: any) {
-      if (user) {
-        token.role = (user as any).role ?? token.role ?? "USER";
-      }
+      if (user) token.role = (user as any).role ?? "USER";
       return token;
     },
     async session({ session, token }: any) {
@@ -66,13 +42,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account }: any) {
-      // GitHub 로 로그인하는 경우에도 ADMIN+승인만 허용
+      // GitHub 로그인 시에도 approved=true 만 허용
       if (account?.provider === "github") {
         const u = await prisma.user.findUnique({ where: { email: user.email! } });
-        if (!u) return false;
-        const approved = (u as any).adminApproved ?? false;
-        const role = (u as any).role ?? "USER";
-        return approved && role === "ADMIN";
+        if (!u?.approved) return false;
       }
       return true;
     },

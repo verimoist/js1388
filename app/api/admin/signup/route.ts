@@ -22,11 +22,11 @@ export async function POST(req: Request) {
     const passwordHash = await hash(password, 12)
     const user = await prisma.user.upsert({
       where: { email },
-      update: { passwordHash, status: "PENDING", adminApproved: false, role: "USER", name },
-      create: { email, name, passwordHash, status: "PENDING", adminApproved: false, role: "USER" }
+      update: { passwordHash, approved: false, role: "USER", name },
+      create: { email, name, passwordHash, approved: false, role: "USER" }
     })
     
-    return NextResponse.json({ ok: true, id: user.id, status: user.status })
+    return NextResponse.json({ ok: true, id: user.id, approved: user.approved })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 })
   }

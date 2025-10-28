@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       content: validatedData.content,
       category: 'press' as const,
       published: validatedData.published,
-      authorId: session.user.id,
+      authorId: (session as any).user.id,
       attachments: validatedData.attachments,
       links: validatedData.links
     }
