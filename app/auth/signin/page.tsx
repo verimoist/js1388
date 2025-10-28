@@ -26,6 +26,8 @@ export default function SignIn() {
     }
   }
 
+  const showAdminSignup = !!process.env.NEXT_PUBLIC_ADMIN_SIGNUP_ENABLED || !!process.env.NEXT_PUBLIC_HAS_ADMIN_TOKEN
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -104,15 +106,21 @@ export default function SignIn() {
             </div>
           </form>
 
-          {/* 관리자 회원가입 링크 */}
-          <div className="text-center">
-            <a
-              href="/admin/signup"
-              className="text-sm text-green-600 hover:text-green-500"
-            >
-              관리자 계정이 없으신가요? 회원가입
-            </a>
-          </div>
+          {/* 관리자 회원가입 링크 - 조건부 노출 */}
+          {showAdminSignup && (
+            <div className="text-center">
+              <a
+                href="/admin/signup"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+              >
+                관리자 회원가입
+              </a>
+            </div>
+          )}
+
+          <p className="text-sm text-gray-500 text-center">
+            * 승인되지 않은 계정은 로그인할 수 없습니다. (관리자 승인 대기)
+          </p>
         </div>
       </div>
     </div>

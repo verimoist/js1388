@@ -25,7 +25,21 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findUnique({ where: { email: credentials.email } })
         if (!user?.passwordHash) return null
         const ok = await compare(credentials.password, user.passwordHash)
-        return ok ? { id: user.id, email: user.email, name: user.name, role: user.role } as any : null
+        if (!ok) return null
+        
+        // 승인 전이면 로그인 거부
+        if (user.status !== "ACTIVE" || !user.adminApproved) {
+          return null
+        }
+        
+        return { 
+          id: user.id, 
+          email: user.email, 
+          name: user.name, 
+          role: user.role, 
+          status: user.status,
+          adminApproved: user.adminApproved
+        } as any
       },
     })
   ],
@@ -33,12 +47,23 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         // @ts-ignore
-        token.role = (user as any).role ?? token.role ?? "USER"
-      } else {
-        // 갱신 시 DB에서 role 동기화
-        if (token?.email) {
-          const u = await prisma.user.findUnique({ where: { email: token.email as string }, select: { role: true } })
-          if (u?.role) token.role = u.role
+        token.role = (user as any).role ?? "USER"
+        // @ts-ignore
+        token.status = (user as any).status ?? "PENDING"
+        // @ts-ignore
+        token.adminApproved = (user as any).adminApproved ?? false
+      } else if (token?.email) {
+        const db = await prisma.user.findUnique({ 
+          where: { email: token.email as string }, 
+          select: { role: true, status: true, adminApproved: true } 
+        })
+        if (db) {
+          // @ts-ignore
+          token.role = db.role
+          // @ts-ignore
+          token.status = db.status
+          // @ts-ignore
+          token.adminApproved = db.adminApproved
         }
       }
       return token
@@ -46,6 +71,10 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // @ts-ignore
       session.user.role = token.role ?? "USER"
+      // @ts-ignore
+      session.user.status = token.status ?? "PENDING"
+      // @ts-ignore
+      session.user.adminApproved = token.adminApproved ?? false
       return session
     },
   },

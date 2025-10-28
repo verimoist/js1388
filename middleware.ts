@@ -3,12 +3,18 @@ import { withAuth } from "next-auth/middleware"
 export default withAuth({
   callbacks: {
     authorized: ({ token, req }) => {
-      const isAdminRoute = req.nextUrl.pathname.startsWith("/admin")
-      if (!isAdminRoute) return true
+      const isAdmin = req.nextUrl.pathname.startsWith("/admin")
+      if (!isAdmin) return true
+      
       // @ts-ignore
-      return token?.role === "ADMIN"
-    },
-  },
+      const ok = token && 
+        token.role === "ADMIN" && 
+        token.adminApproved === true && 
+        token.status === "ACTIVE"
+      
+      return !!ok
+    }
+  }
 })
 
 export const config = { matcher: ["/admin/:path*"] }

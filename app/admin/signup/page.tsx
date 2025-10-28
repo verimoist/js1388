@@ -29,7 +29,7 @@ export default function AdminSignup() {
         return
       }
       
-      alert("관리자 계정 생성 완료. 로그인 해주세요.")
+      alert("가입 완료. 현재 상태는 '승인 대기'입니다. 관리자가 승인하면 로그인할 수 있습니다.")
       router.push("/auth/signin")
     } catch (error) {
       console.error("Signup error:", error)
@@ -123,7 +123,7 @@ export default function AdminSignup() {
               disabled={loading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "생성 중..." : "관리자 계정 생성"}
+              {loading ? "가입 중..." : "가입"}
             </button>
           </div>
 
