@@ -17,19 +17,27 @@ export default function NewResourcePage() {
     setLoading(true)
 
     try {
+      const submitData = {
+        title: formData.title,
+        fileUrl: formData.fileUrl,
+        attachments: [] // 자료실은 파일 URL만 사용
+      }
+      
+      console.log('자료 제출 데이터:', submitData)
+
       const response = await fetch("/api/resources", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       })
 
       if (response.ok) {
         router.push("/admin/resources")
       } else {
         const error = await response.json()
-        alert(error.error || "자료 생성에 실패했습니다.")
+        alert(`자료 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
       console.error("Error creating resource:", error)
@@ -94,8 +102,9 @@ export default function NewResourcePage() {
           ) : (
             <FileUpload
               onUpload={handleFileUpload}
-              accept="*/*"
-              maxSize={50}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip,.rar,.7z,image/*"
+              maxSize={10}
+              folder="resources"
             />
           )}
         </div>

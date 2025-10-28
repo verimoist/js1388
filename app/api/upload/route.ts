@@ -43,10 +43,10 @@ export async function POST(request: NextRequest) {
 
     // BLOB_READ_WRITE_TOKEN 확인
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      console.error('BLOB_READ_WRITE_TOKEN이 설정되지 않음')
+      console.error('Missing BLOB_READ_WRITE_TOKEN')
       return NextResponse.json(
-        { error: 'BLOB_READ_WRITE_TOKEN이 설정되지 않았습니다.' },
-        { status: 500 }
+        { error: 'Missing BLOB_READ_WRITE_TOKEN' },
+        { status: 401 }
       )
     }
 
@@ -75,13 +75,18 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File
     const folder = formData.get('folder') as string
 
-    console.log('파일 정보:', {
-      name: file?.name,
+    // 상세 로그 정보 수집
+    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const userAgent = request.headers.get('user-agent') || 'unknown'
+    
+    console.log('업로드 요청 정보:', {
+      folder: folder,
+      filename: file?.name,
       size: file?.size,
-      type: file?.type,
-      lastModified: file?.lastModified
+      contentType: file?.type,
+      clientIP: clientIP,
+      userAgent: userAgent.substring(0, 100) // 개인정보 보호를 위해 100자로 제한
     })
-    console.log('폴더:', folder)
 
     // 파일 존재 확인
     if (!file) {

@@ -7,13 +7,15 @@ interface FileUploadProps {
   accept?: string
   maxSize?: number // MB
   className?: string
+  folder?: string // 업로드 폴더 지정
 }
 
 export default function FileUpload({ 
   onUpload, 
   accept = "*/*", 
   maxSize = 10,
-  className = ""
+  className = "",
+  folder = "notice" // 기본값 설정
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragActive, setDragActive] = useState(false)
@@ -30,6 +32,7 @@ export default function FileUpload({
     try {
       const formData = new FormData()
       formData.append("file", file)
+      formData.append("folder", folder)
 
       const response = await fetch("/api/upload", {
         method: "POST",

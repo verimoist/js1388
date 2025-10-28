@@ -56,8 +56,8 @@ model Notice {
   category    String   @default("notice") // notice | press
   views       Int      @default(0)
   published   Boolean  @default(true)
-  attachments Json?    // 첨부파일 정보 [{name: string, url: string, size: number, type: string}]
-  links       Json?    // 링크 정보 [{title: string, url: string, description?: string}]
+  attachments Json?    @default("[]") // 첨부파일 정보 [{name: string, url: string, size: number, type: string}]
+  links       Json?    @default("[]") // 링크 정보 [{title: string, url: string, description?: string}]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   authorId    String?
@@ -77,12 +77,13 @@ model Press {
 }
 
 model GalleryItem {
-  id        String   @id @default(cuid())
-  title     String
-  imageUrl  String
-  caption   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  imageUrl    String
+  caption     String?
+  attachments Json?    @default("[]") // 첨부파일 정보
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Resource {
@@ -91,6 +92,7 @@ model Resource {
   fileUrl     String
   filetype    String?
   filesize    Int?
+  attachments Json?    @default("[]") // 첨부파일 정보
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
