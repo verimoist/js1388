@@ -132,37 +132,24 @@ const partners = [
   }
 ]
 
+import { getNotices, getGalleryItems } from '@/lib/data'
+import InteractiveButton from '@/components/ui/InteractiveButton'
+import Container from '@/components/ui/Container'
+
 export default async function HomePage() {
-  // 실제 데이터베이스에서 공지사항 가져오기
-  const noticesData = await prisma.notice.findMany({
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-    take: 3,
-    include: {
-      author: {
-        select: {
-          name: true,
-          email: true
-        }
-      }
-    }
-  })
+  // 캐시된 데이터 가져오기
+  const noticesData = await getNotices(3)
+  const galleryData = await getGalleryItems(6)
 
   // NoticeList 컴포넌트에 맞는 형식으로 변환
   const notices = noticesData.map(notice => ({
     id: notice.id,
     title: notice.title,
     content: notice.content,
-    date: notice.createdAt.toLocaleDateString('ko-KR'),
+    date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
     views: notice.views,
     category: notice.category as 'notice' | 'press'
   }))
-
-  // 실제 데이터베이스에서 갤러리 데이터 가져오기
-  const galleryData = await prisma.galleryItem.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 6
-  })
 
   // GalleryGrid 컴포넌트에 맞는 형식으로 변환
   const galleryItems = galleryData.map(item => ({

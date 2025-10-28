@@ -1,9 +1,23 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const invalidateTag = searchParams.get('invalidate')
+    
     console.log('=== 헬스체크 시작 ===')
+    
+    // 관리자 권한 확인 (간단한 토큰 체크)
+    const authHeader = request.headers.get('authorization')
+    const isAdmin = authHeader === `Bearer ${process.env.ADMIN_TOKEN}` || 
+                   process.env.NODE_ENV === 'development'
+    
+    // 캐시 무효화 요청 처리
+    if (invalidateTag && isAdmin) {
+      console.log(`캐시 무효화 요청: ${invalidateTag}`)
+      revalidateTag(invalidateTag)
+      console.log(`✅ ${invalidateTag} 태그 무효화 완료`)
+    }
     
     // 1. 데이터베이스 연결 테스트
     let dbStatus = false
@@ -41,7 +55,12 @@ export async function GET() {
         vercelBlob: blobStatus,
         adminConfig: adminStatus
       },
-      environment: process.env.NODE_ENV || 'development'
+      environment: process.env.NODE_ENV || 'development',
+      cacheInvalidation: invalidateTag ? {
+        tag: invalidateTag,
+        success: true,
+        message: `${invalidateTag} 태그가 무효화되었습니다`
+      } : null
     }
 
     console.log('=== 헬스체크 완료 ===')
@@ -52,7 +71,8 @@ export async function GET() {
       {
         status: 'error',
         timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : '알 수 없는 오류'
+        error: error instanceof Error ? error.message : '알 수 없는 오류',
+        details: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     )

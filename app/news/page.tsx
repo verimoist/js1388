@@ -6,29 +6,17 @@ import NoticeList from '../../components/NoticeList'
 import Tabs from '../../components/ui/Tabs'
 import Button from '../../components/ui/Button'
 import { SITE } from '../../lib/site'
-import { prisma } from '../../lib/prisma'
+import { getNotices, getPressReleases } from '../../lib/data'
 
 export const metadata: Metadata = {
   title: `공지사항 - ${SITE.name}`,
   description: `${SITE.name}의 최신 공지사항과 보도자료를 확인하세요.`,
 }
 
-// 실제 데이터베이스에서 공지사항 가져오기
-
 export default async function NewsPage() {
-  // 실제 데이터베이스에서 공지사항 가져오기
-  const noticesData = await prisma.notice.findMany({
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      author: {
-        select: {
-          name: true,
-          email: true
-        }
-      }
-    }
-  })
+  // 캐시된 데이터 가져오기
+  const noticesData = await getNotices()
+  const pressData = await getPressReleases()
 
   // 공지사항과 보도자료 분리
   const notices = noticesData
@@ -37,21 +25,19 @@ export default async function NewsPage() {
       id: notice.id,
       title: notice.title,
       content: notice.content,
-      date: notice.createdAt.toLocaleDateString('ko-KR'),
+      date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
       views: notice.views,
       category: notice.category as 'notice' | 'press'
     }))
 
-  const pressReleases = noticesData
-    .filter(notice => notice.category === 'press')
-    .map(notice => ({
-      id: notice.id,
-      title: notice.title,
-      content: notice.content,
-      date: notice.createdAt.toLocaleDateString('ko-KR'),
-      views: notice.views,
-      category: notice.category as 'notice' | 'press'
-    }))
+  const pressReleases = pressData.map(notice => ({
+    id: notice.id,
+    title: notice.title,
+    content: notice.content,
+    date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
+    views: notice.views,
+    category: notice.category as 'notice' | 'press'
+  }))
 
   const allNotices = [...notices, ...pressReleases].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()

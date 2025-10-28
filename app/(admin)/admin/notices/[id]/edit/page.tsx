@@ -39,6 +39,7 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
   })
   const [attachments, setAttachments] = useState<Attachment[]>([])
   const [links, setLinks] = useState<LinkItem[]>([])
+  const [removedAttachments, setRemovedAttachments] = useState<string[]>([])
   const [newLink, setNewLink] = useState({ title: "", url: "", description: "" })
 
   useEffect(() => {
@@ -125,15 +126,19 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
     }
   }
 
-  const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index))
-  }
-
   const addLink = () => {
     if (newLink.title && newLink.url) {
       setLinks(prev => [...prev, { ...newLink }])
       setNewLink({ title: "", url: "", description: "" })
     }
+  }
+
+  const removeAttachment = (index: number) => {
+    const attachment = attachments[index]
+    if (attachment.url) {
+      setRemovedAttachments(prev => [...prev, attachment.url])
+    }
+    setAttachments(prev => prev.filter((_, i) => i !== index))
   }
 
   const removeLink = (index: number) => {
@@ -145,16 +150,29 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
     setLoading(true)
 
     try {
+      // 기존 첨부파일에서 제거된 것들을 제외하고 새로 업로드된 것들과 병합
+      const finalAttachments = attachments.filter(attachment => 
+        !removedAttachments.includes(attachment.url)
+      )
+
+      const submitData = {
+        title: formData.title,
+        content: formData.content,
+        category: formData.category,
+        published: formData.published,
+        attachments: finalAttachments,
+        links: links
+      }
+      
+      console.log('수정할 데이터:', submitData)
+      console.log('제거된 첨부파일:', removedAttachments)
+
       const response = await fetch(`/api/notices/${params.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          ...(attachments.length > 0 && { attachments }),
-          ...(links.length > 0 && { links }),
-        }),
+        body: JSON.stringify(submitData),
       })
 
       if (response.ok) {
@@ -162,7 +180,7 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
       } else {
         const error = await response.json()
         console.error("API Error:", error)
-        alert(`공지사항 수정에 실패했습니다: ${error.error || "알 수 없는 오류"}`)
+        alert(`공지사항 수정에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
       console.error("Error updating notice:", error)

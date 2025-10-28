@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { noticeCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
+import { revalidateTag, revalidatePath } from 'next/cache'
 
 export async function GET(request: NextRequest) {
   try {
@@ -100,6 +101,12 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('공지사항 생성 완료:', notice.id)
+    
+    // 캐시 무효화
+    revalidateTag('notices')
+    revalidatePath('/')
+    revalidatePath('/news')
+    
     return NextResponse.json(notice, { status: 201 })
   } catch (error) {
     console.error("공지사항 생성 오류:", error)
