@@ -162,17 +162,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 파일명 sanitize (한글/공백 허용하되, 스토리지 경로는 안전하게)
+    // 파일명 sanitize + 경로 안정화(한글 허용, 스토리지 안전문자만 유지)
     const originalName = file.name || 'upload.bin'
-    const base = originalName.split('.').slice(0, -1).join('.') || 'file'
-    const ext = originalName.includes('.') ? '.' + originalName.split('.').pop() : ''
+    const dot = originalName.lastIndexOf('.')
+    const base = dot > -1 ? originalName.slice(0, dot) : originalName
+    const ext = dot > -1 ? originalName.slice(dot) : ''
     
-    // 한글, 영문, 숫자, 일부 특수문자만 허용하고 공백을 하이픈으로 변환
     const safeBase = base
       .normalize('NFC')
-      .replace(/[^0-9A-Za-z가-힣._ -]/g, '')     // 허용 문자만 남기기
-      .replace(/\s+/g, '-')                      // 공백을 하이픈으로 변환
-      .slice(0, 100) || 'file'                   // 길이 제한
+      .replace(/[^0-9A-Za-z가-힣._ -]/g, '')
+      .replace(/\s+/g, '-')
+      .slice(0, 100) || 'file'
     
     const timestamp = Date.now()
     const safeName = `${timestamp}-${safeBase}${ext}`
@@ -180,18 +180,22 @@ export async function POST(request: NextRequest) {
     
     console.log('파일명 처리:', {
       originalName,
-      safeBase,
+      base,
       ext,
+      safeBase,
       safeName,
       pathname
     })
     console.log('Vercel Blob 업로드 시작')
 
+    // contentType 확정
+    const contentType = file.type || 'application/octet-stream'
+    
     // Vercel Blob에 파일 업로드
     const blob = await put(pathname, file, {
       access: 'public',
       token: token,
-      contentType: file.type || 'application/octet-stream'
+      contentType: contentType
     })
 
     console.log('Vercel Blob 업로드 완료:', {
@@ -206,7 +210,7 @@ export async function POST(request: NextRequest) {
       url: blob.url,
       downloadUrl: blob.downloadUrl,
       pathname: blob.pathname,
-      contentType: file.type || 'application/octet-stream',
+      contentType: contentType,
       size: file.size,
       originalName: originalName
     })

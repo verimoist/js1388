@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, X, Link as LinkIcon, Paperclip } from "lucide-react"
+import { uploadToBlob } from "@/lib/upload-client"
 
 interface Attachment {
   name: string
@@ -99,26 +100,16 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
           continue
         }
         
-        const formData = new FormData()
-        formData.append('file', file)
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          const attachment: Attachment = {
-            name: result.name,
-            url: result.url,
-            size: result.size,
-            type: result.type
-          }
-          setAttachments(prev => [...prev, attachment])
-        } else {
-          alert(`파일 업로드 실패: ${file.name}`)
+        // 공용 업로드 유틸 사용
+        const uploaded = await uploadToBlob(file, formData.category)
+        
+        const attachment: Attachment = {
+          name: uploaded.name,
+          url: uploaded.url,
+          size: uploaded.size || file.size,
+          type: uploaded.contentType || file.type
         }
+        setAttachments(prev => [...prev, attachment])
       } catch (error) {
         console.error('파일 업로드 오류:', error)
         alert(`파일 업로드 오류: ${file.name} - ${error instanceof Error ? error.message : '알 수 없는 오류'}`)

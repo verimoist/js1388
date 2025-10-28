@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, X, Link as LinkIcon, Paperclip } from "lucide-react"
+import { uploadToBlob } from "@/lib/upload-client"
 
 interface Attachment {
   name: string
@@ -74,40 +75,16 @@ export default function NewNoticePage() {
           continue
         }
         
-        console.log('FormData 생성 시작')
-        const formData = new FormData()
-        formData.append('file', file)
-        formData.append('folder', 'notice') // 공지사항 폴더
-        console.log('FormData에 파일 추가 완료 - folder: notice')
-
-        console.log('API 호출 시작:', '/api/upload')
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        console.log('API 응답 받음:', {
-          status: response.status,
-          statusText: response.statusText,
-          ok: response.ok,
-          headers: Object.fromEntries(response.headers.entries())
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          console.log('업로드 성공:', result)
-          const attachment: Attachment = {
-            name: result.originalName,
-            url: result.url,
-            size: result.size,
-            type: result.contentType
-          }
-          setAttachments(prev => [...prev, attachment])
-        } else {
-          const errorResult = await response.json()
-          console.error('업로드 실패:', errorResult)
-          alert(`파일 업로드 실패: ${file.name} - ${errorResult.error}`)
+        // 공용 업로드 유틸 사용
+        const uploaded = await uploadToBlob(file, 'notice')
+        
+        const attachment: Attachment = {
+          name: uploaded.name,
+          url: uploaded.url,
+          size: uploaded.size || file.size,
+          type: uploaded.contentType || file.type
         }
+        setAttachments(prev => [...prev, attachment])
       } catch (error) {
         console.error('파일 업로드 오류:', error)
         alert(`파일 업로드 오류: ${file.name} - ${error instanceof Error ? error.message : '알 수 없는 오류'}`)

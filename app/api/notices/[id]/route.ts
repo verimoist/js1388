@@ -2,14 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { noticeUpdateSchema } from "@/lib/schemas"
+import { revalidateTag } from 'next/cache'
 import { z } from "zod"
-
-const updateNoticeSchema = z.object({
-  title: z.string().min(1, "제목은 필수입니다").optional(),
-  content: z.string().min(1, "내용은 필수입니다").optional(),
-  category: z.enum(["notice", "press"]).optional(),
-  published: z.boolean().optional(),
-})
 
 export async function GET(
   request: NextRequest,
@@ -53,19 +48,36 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const validatedData = updateNoticeSchema.parse(body)
+    const validatedData = noticeUpdateSchema.parse(body)
+
+    console.log('공지사항 수정 데이터:', validatedData)
 
     const notice = await prisma.notice.update({
       where: { id: params.id },
-      data: validatedData,
+      data: {
+        ...validatedData,
+        attachments: validatedData.attachments ?? [],
+        links: validatedData.links ?? []
+      },
       include: { author: { select: { name: true, email: true } } },
     })
+
+    console.log('공지사항 수정 완료:', notice.id)
+    
+    // 캐시 무효화
+    revalidateTag('notices')
+    if (validatedData.category === 'press') {
+      revalidateTag('press')
+    }
 
     return NextResponse.json(notice)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
+        { 
+          error: "입력 데이터가 올바르지 않습니다", 
+          details: error.issues.map(i => i.message).join(', ')
+        },
         { status: 400 }
       )
     }

@@ -25,8 +25,18 @@ export const noticeCreateSchema = z.object({
   category: z.enum(["notice", "press"]).default("notice"),
   published: z.boolean().default(true),
   imageUrl: z.preprocess(emptyToUndefined, z.string().url().optional()),
-  attachments: z.array(attachmentSchema).optional().default([]),
+  attachments: z.array(z.object({
+    name: z.string().min(1),
+    url: z.string().url(),
+    contentType: z.string().optional(),
+    size: z.number().optional()
+  })).optional().default([]),
   links: z.array(linkSchema).optional().default([])
+})
+
+// 공지사항 수정 스키마
+export const noticeUpdateSchema = noticeCreateSchema.partial().extend({
+  id: z.string().min(1)
 })
 
 // 보도자료 생성 스키마
@@ -35,8 +45,18 @@ export const pressCreateSchema = z.object({
   content: z.string().min(1, "내용은 필수입니다").max(10000, "내용은 10000자 이하여야 합니다"),
   sourceUrl: z.preprocess(emptyToUndefined, z.string().url().optional()),
   published: z.boolean().default(true),
-  attachments: z.array(attachmentSchema).optional().default([]),
+  attachments: z.array(z.object({
+    name: z.string().min(1),
+    url: z.string().url(),
+    contentType: z.string().optional(),
+    size: z.number().optional()
+  })).optional().default([]),
   links: z.array(linkSchema).optional().default([])
+})
+
+// 보도자료 수정 스키마
+export const pressUpdateSchema = pressCreateSchema.partial().extend({
+  id: z.string().min(1)
 })
 
 // 갤러리 생성 스키마
