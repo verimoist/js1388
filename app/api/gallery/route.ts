@@ -64,31 +64,17 @@ export async function POST(request: NextRequest) {
     const validatedData = await galleryCreateSchema.parseAsync(body)
     console.log('검증된 데이터:', validatedData)
 
-    // TODO: 마이그레이션 적용 확인 후 제거할 임시 핫픽스
-    const data: any = { 
+    const galleryData = {
       title: validatedData.title,
       caption: validatedData.caption,
-      imageUrl: validatedData.imageUrl
-    }
-    
-    // attachments 필드가 존재하는지 확인 후 추가
-    try {
-      // Prisma Client에서 attachments 필드 존재 여부 확인
-      const modelFields = Object.keys(prisma.galleryItem.fields || {})
-      if (modelFields.includes('attachments')) {
-        data.attachments = Array.isArray(validatedData.attachments) ? validatedData.attachments : []
-        console.log('[gallery] attachments 필드 포함하여 저장')
-      } else {
-        console.log('[gallery] attachments 컬럼 없음 → attachments 없이 저장')
-      }
-    } catch (error) {
-      console.log('[gallery] attachments 필드 확인 실패 → attachments 없이 저장:', error)
+      imageUrl: validatedData.imageUrl,
+      attachments: validatedData.attachments || []
     }
 
-    console.log('데이터베이스 저장 시작:', data)
+    console.log('데이터베이스 저장 시작:', galleryData)
 
     const galleryItem = await prisma.galleryItem.create({
-      data: data,
+      data: galleryData,
     })
 
     console.log('갤러리 항목 생성 완료:', galleryItem.id)
