@@ -33,14 +33,14 @@ export default function EditPressPage() {
   const [newLink, setNewLink] = useState({ title: "", url: "", description: "" })
 
   useEffect(() => {
-    if (params.id) {
+    if (params?.id) {
       fetchPress()
     }
-  }, [params.id])
+  }, [params?.id])
 
   const fetchPress = async () => {
     try {
-      const response = await fetch(`/api/press/${params.id}`)
+      const response = await fetch(`/api/press/${params?.id}`)
       if (response.ok) {
         const press = await response.json()
         setFormData({
@@ -131,13 +131,13 @@ export default function EditPressPage() {
     setLoading(true)
 
     try {
-      const response = await fetch(`/api/press/${params.id}`, {
+      const response = await fetch(`/api/press/${params?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: params.id,
+          id: params?.id,
           ...formData,
           attachments: attachments,
           links: links?.filter(Boolean) ?? []

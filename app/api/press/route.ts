@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { pressCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('보도자료 생성 요청 시작')
     
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     console.log('세션 정보:', { 
       user: session?.user?.email, 
       role: session?.user?.role,

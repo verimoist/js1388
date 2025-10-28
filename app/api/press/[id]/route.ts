@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
@@ -63,14 +62,14 @@ export async function PUT(
   try {
     console.log('보도자료 수정 요청:', params.id)
     
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     console.log('세션 정보:', { 
       user: session?.user?.email, 
-      role: session?.user?.role,
+      role: (session?.user as any)?.role,
       hasSession: !!session 
     })
     
-    if (!session || session.user.role !== "admin") {
+    if (!session || (session.user as any).role !== "ADMIN") {
       console.log('관리자 권한 없음')
       return NextResponse.json(
         { error: "관리자 권한이 필요합니다" },
@@ -152,9 +151,9 @@ export async function DELETE(
   try {
     console.log('보도자료 삭제 요청:', params.id)
     
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
     
-    if (!session || session.user.role !== "admin") {
+    if (!session || (session.user as any).role !== "ADMIN") {
       return NextResponse.json(
         { error: "관리자 권한이 필요합니다" },
         { status: 403 }

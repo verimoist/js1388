@@ -1,10 +1,9 @@
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 
 export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession()
   
   if (!session) {
     return <div>로그인이 필요합니다.</div>
