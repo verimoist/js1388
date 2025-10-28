@@ -145,8 +145,7 @@ export async function POST(request: NextRequest) {
       url: blob.url,
       downloadUrl: blob.downloadUrl,
       pathname: blob.pathname,
-      contentType: blob.contentType,
-      size: blob.size
+      contentType: blob.contentType
     })
 
     // 성공 응답
@@ -155,7 +154,7 @@ export async function POST(request: NextRequest) {
       downloadUrl: blob.downloadUrl,
       pathname: blob.pathname,
       contentType: blob.contentType,
-      size: blob.size,
+      size: file.size, // 원본 파일 크기 사용
       originalName: file.name
     })
 
