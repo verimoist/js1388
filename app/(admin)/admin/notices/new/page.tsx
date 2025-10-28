@@ -34,11 +34,18 @@ export default function NewNoticePage() {
     const files = e.target.files
     if (!files) return
 
-    console.log('파일 업로드 시작, 파일 수:', files.length)
+    console.log('=== 파일 업로드 시작 ===')
+    console.log('파일 수:', files.length)
+    console.log('업로드 시간:', new Date().toISOString())
 
     for (const file of Array.from(files)) {
       try {
-        console.log('파일 업로드 중:', file.name)
+        console.log('파일 처리 시작:', {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified
+        })
 
         // 파일 타입 검증 (이미지, 문서, 압축 파일 등 허용)
         const allowedTypes = [
@@ -49,27 +56,41 @@ export default function NewNoticePage() {
           'text/plain', 'application/zip', 'application/x-rar-compressed'
         ]
 
+        console.log('파일 타입 검증:', file.type, '허용 여부:', allowedTypes.includes(file.type))
+
         if (!allowedTypes.includes(file.type)) {
+          console.error('지원하지 않는 파일 형식:', file.name, file.type)
           alert(`지원하지 않는 파일 형식입니다: ${file.name} (${file.type})`)
           continue
         }
 
         // Vercel 제한사항 고려한 파일 크기 제한 (4MB)
         const maxSize = 4 * 1024 * 1024 // 4MB (Vercel 무료 플랜 4.5MB 제한 고려)
+        console.log('파일 크기 검증:', file.size, 'bytes, 최대:', maxSize, 'bytes')
+        
         if (file.size > maxSize) {
+          console.error('파일 크기 초과:', file.name, file.size, 'bytes')
           alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)\nVercel 무료 플랜은 4MB까지 지원합니다.`)
           continue
         }
         
+        console.log('FormData 생성 시작')
         const formData = new FormData()
         formData.append('file', file)
+        console.log('FormData에 파일 추가 완료')
 
+        console.log('API 호출 시작:', '/api/upload')
         const response = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
 
-        console.log('업로드 응답 상태:', response.status)
+        console.log('API 응답 받음:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok,
+          headers: Object.fromEntries(response.headers.entries())
+        })
 
         if (response.ok) {
           const result = await response.json()
