@@ -5,11 +5,13 @@ import { useState } from "react"
 export default function DebugSystemPage() {
   const [results, setResults] = useState<any>({})
   const [loading, setLoading] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState<string>('notice')
 
   const testFileUpload = async () => {
     setLoading(true)
     try {
       console.log('=== Vercel Blob 파일 업로드 테스트 시작 ===')
+      console.log('선택된 폴더:', selectedFolder)
       
       // 실제 파일 생성 (영문 파일명으로 테스트)
       const file = new File(["test file content for Vercel Blob"], "testfile.txt", { type: "text/plain" })
@@ -17,7 +19,7 @@ export default function DebugSystemPage() {
       
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('folder', 'notice') // 테스트용 폴더
+      formData.append('folder', selectedFolder) // 선택된 폴더 사용
       console.log('FormData 생성 완료')
 
       console.log('API 호출 시작')
@@ -154,13 +156,31 @@ export default function DebugSystemPage() {
       <h1 className="text-3xl font-bold mb-8">시스템 디버깅</h1>
       
       <div className="space-y-4">
-        <button
-          onClick={testFileUpload}
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          파일 업로드 테스트
-        </button>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="folder-select" className="block text-sm font-medium text-gray-700 mb-2">
+              업로드 폴더 선택:
+            </label>
+            <select
+              id="folder-select"
+              value={selectedFolder}
+              onChange={(e) => setSelectedFolder(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="notice">공지사항 (notice)</option>
+              <option value="press">보도자료 (press)</option>
+              <option value="gallery">갤러리 (gallery)</option>
+              <option value="resources">자료실 (resources)</option>
+            </select>
+          </div>
+          <button
+            onClick={testFileUpload}
+            disabled={loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? '업로드 중...' : `${selectedFolder} 폴더 업로드 테스트`}
+          </button>
+        </div>
 
         <button
           onClick={testPressAPI}

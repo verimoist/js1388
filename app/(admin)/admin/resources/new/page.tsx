@@ -94,8 +94,9 @@ export default function NewResourcePage() {
           ) : (
             <FileUpload
               onUpload={handleFileUpload}
-              accept="*/*"
-              maxSize={50}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip,.rar,.7z,image/*"
+              maxSize={10}
+              folder="resources"
             />
           )}
         </div>

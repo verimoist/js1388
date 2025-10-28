@@ -108,6 +108,7 @@ export default function NewGalleryPage() {
               onUpload={handleFileUpload}
               accept="image/*"
               maxSize={10}
+              folder="gallery"
             />
           )}
         </div>
