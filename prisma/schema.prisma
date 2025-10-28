@@ -9,15 +9,24 @@ datasource db {
 
 model User {
   id            String   @id @default(cuid())
+  email         String   @unique
   name          String?
-  email         String?  @unique
-  emailVerified DateTime?
   image         String?
-  password      String?  // 이메일 로그인용 비밀번호
-  role          String   @default("user") // "admin" only for ADMIN_EMAIL
+  // 로컬 계정용
+  passwordHash  String?   // bcrypt/argon2 해시 저장
+  // 권한
+  role          Role      @default(USER)
+  // OAuth 연결(있다면 유지)
   accounts      Account[]
   sessions      Session[]
   notices       Notice[] @relation("NoticeAuthor")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Account {

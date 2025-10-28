@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { noticeUpdateSchema } from "@/lib/schemas"
 import { revalidateTag } from 'next/cache'
 import { z } from "zod"
+import { requireAdmin } from "@/lib/authz"
 
 export async function GET(
   request: NextRequest,
@@ -38,14 +37,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
-    
-    if (!session || session.user.role !== "admin") {
-      return NextResponse.json(
-        { error: "관리자 권한이 필요합니다" },
-        { status: 403 }
-      )
-    }
+    await requireAdmin()
 
     const body = await request.json()
     const validatedData = noticeUpdateSchema.parse(body)
@@ -72,6 +64,13 @@ export async function PATCH(
 
     return NextResponse.json(notice)
   } catch (error) {
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json(
+        { error: "관리자 권한이 필요합니다" },
+        { status: 403 }
+      )
+    }
+    
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { 
@@ -95,14 +94,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
-    
-    if (!session || session.user.role !== "admin") {
-      return NextResponse.json(
-        { error: "관리자 권한이 필요합니다" },
-        { status: 403 }
-      )
-    }
+    await requireAdmin()
 
     await prisma.notice.delete({
       where: { id: params.id },
@@ -110,6 +102,13 @@ export async function DELETE(
 
     return NextResponse.json({ message: "공지사항이 삭제되었습니다" })
   } catch (error) {
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json(
+        { error: "관리자 권한이 필요합니다" },
+        { status: 403 }
+      )
+    }
+    
     console.error("Error deleting notice:", error)
     return NextResponse.json(
       { error: "공지사항 삭제에 실패했습니다" },

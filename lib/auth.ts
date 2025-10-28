@@ -1,161 +1,57 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import NextAuth, { type NextAuthOptions } from "next-auth"
 import GitHubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
-import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcryptjs"
+import Credentials from "next-auth/providers/credentials"
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
-
-// Naver Provider (NextAuth에서 공식 지원하지 않으므로 커스텀 구현)
-const NaverProvider = {
-  id: "naver",
-  name: "Naver",
-  type: "oauth",
-  version: "2.0",
-  scope: "name email",
-  params: {
-    grant_type: "authorization_code",
-  },
-  accessTokenUrl: "https://nid.naver.com/oauth2.0/token",
-  requestTokenUrl: "https://nid.naver.com/oauth2.0/token",
-  authorizationUrl: "https://nid.naver.com/oauth2.0/authorize?response_type=code",
-  profileUrl: "https://openapi.naver.com/v1/nid/me",
-  profile(profile: any) {
-    return {
-      id: profile.response.id,
-      name: profile.response.name,
-      email: profile.response.email,
-      image: profile.response.profile_image,
-    }
-  },
-  clientId: process.env.NAVER_CLIENT_ID,
-  clientSecret: process.env.NAVER_CLIENT_SECRET,
-}
+import { compare } from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      allowDangerousEmailAccountLinking: false,
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    NaverProvider as any,
-    CredentialsProvider({
-      name: "credentials",
+    Credentials({
+      name: "Email & Password",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
-
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
-          })
-
-          if (!user || !user.password) {
-            return null
-          }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          )
-
-          if (!isPasswordValid) {
-            return null
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            role: user.role
-          }
-        } catch (error) {
-          console.error("Credentials auth error:", error)
-          return null
-        }
-      }
+        if (!credentials?.email || !credentials?.password) return null
+        const user = await prisma.user.findUnique({ where: { email: credentials.email } })
+        if (!user?.passwordHash) return null
+        const ok = await compare(credentials.password, user.passwordHash)
+        return ok ? { id: user.id, email: user.email, name: user.name, role: user.role } as any : null
+      },
     })
   ],
   callbacks: {
-    async session({ session, user }: any) {
-      if (session.user) {
-        session.user.id = user.id
-        session.user.role = (user as any).role || "user"
+    async jwt({ token, user }) {
+      if (user) {
+        // @ts-ignore
+        token.role = (user as any).role ?? token.role ?? "USER"
+      } else {
+        // 갱신 시 DB에서 role 동기화
+        if (token?.email) {
+          const u = await prisma.user.findUnique({ where: { email: token.email as string }, select: { role: true } })
+          if (u?.role) token.role = u.role
+        }
       }
-      return session
+      return token
     },
-    async signIn({ user, account, profile }: any) {
-      console.log("Sign in attempt:", { 
-        userEmail: user.email, 
-        provider: account?.provider,
-        userRole: user.role 
-      })
-      
-      if (account?.provider === "github" || account?.provider === "google" || account?.provider === "naver") {
-        // GitHub, Google, Naver 로그인 시 관리자 권한 체크
-        const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
-        const fallbackAdminEmail = process.env.ADMIN_EMAIL
-        
-        // 기존 단일 이메일도 지원 (하위 호환성)
-        if (fallbackAdminEmail) {
-          adminEmails.push(fallbackAdminEmail)
-        }
-        
-        if (adminEmails.includes(user.email)) {
-          // 관리자 이메일인 경우 role을 admin으로 설정
-          try {
-            await prisma.user.update({
-              where: { email: user.email! },
-              data: { role: "admin" }
-            })
-            console.log(`Admin role assigned to ${account.provider} user:`, user.email)
-          } catch (error) {
-            console.error("Error assigning admin role:", error)
-          }
-        }
-      } else if (account?.provider === "credentials") {
-        // 이메일 로그인 시에도 관리자 권한 체크
-        const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
-        const fallbackAdminEmail = process.env.ADMIN_EMAIL
-        
-        // 기존 단일 이메일도 지원 (하위 호환성)
-        if (fallbackAdminEmail) {
-          adminEmails.push(fallbackAdminEmail)
-        }
-        
-        if (adminEmails.includes(user.email)) {
-          // 관리자 이메일인 경우 role을 admin으로 설정
-          try {
-            await prisma.user.update({
-              where: { email: user.email! },
-              data: { role: "admin" }
-            })
-            console.log("Admin role assigned to credentials user:", user.email)
-            user.role = "admin" // 세션에 반영
-          } catch (error) {
-            console.error("Error assigning admin role to credentials user:", error)
-          }
-        }
-        console.log("Credentials login - user role:", user.role)
-      }
-      
-      return true
+    async session({ session, token }) {
+      // @ts-ignore
+      session.user.role = token.role ?? "USER"
+      return session
     },
   },
   pages: {
-    signIn: "/auth/login",
-  },
+    signIn: "/auth/signin", // 커스텀 로그인 페이지
+  }
 }
 
-// NextAuth 인스턴스는 app/api/auth/[...nextauth]/route.ts에서 사용됩니다
+export default NextAuth(authOptions)

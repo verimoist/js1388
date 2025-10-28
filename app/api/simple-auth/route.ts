@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       where: { email }
     })
 
-    if (!user || !user.password) {
+    if (!user || !user.passwordHash) {
       return NextResponse.json(
         { error: '사용자를 찾을 수 없습니다.' },
         { status: 401 }
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 비밀번호 확인
-    const isPasswordValid = await bcrypt.compare(password, user.password)
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: '비밀번호가 올바르지 않습니다.' },
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 관리자 권한 확인
-    if (user.role !== 'admin') {
+    if (user.role !== 'ADMIN') {
       return NextResponse.json(
         { error: '관리자 권한이 없습니다.' },
         { status: 403 }

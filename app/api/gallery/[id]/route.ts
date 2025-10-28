@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { galleryCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
 import { revalidateTag, revalidatePath } from 'next/cache'
+import { requireAdmin } from "@/lib/authz"
 
 export async function GET(
   request: NextRequest,
@@ -39,20 +38,8 @@ export async function PUT(
   try {
     console.log('갤러리 항목 수정 요청 시작')
     
-    const session = await getServerSession(authOptions)
-    console.log('세션 정보:', { 
-      user: session?.user?.email, 
-      role: session?.user?.role,
-      hasSession: !!session 
-    })
-    
-    if (!session || session.user.role !== "admin") {
-      console.log('관리자 권한 없음')
-      return NextResponse.json(
-        { error: "관리자 권한이 필요합니다" },
-        { status: 403 }
-      )
-    }
+    await requireAdmin()
+    console.log('관리자 권한 확인 완료')
 
     const body = await request.json()
     console.log('요청 데이터:', body)
@@ -83,6 +70,13 @@ export async function PUT(
 
     return NextResponse.json(galleryItem)
   } catch (error) {
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json(
+        { error: "관리자 권한이 필요합니다" },
+        { status: 403 }
+      )
+    }
+    
     console.error("갤러리 항목 수정 오류:", error)
     
     if (error instanceof z.ZodError) {
@@ -111,20 +105,8 @@ export async function DELETE(
   try {
     console.log('갤러리 항목 삭제 요청 시작')
     
-    const session = await getServerSession(authOptions)
-    console.log('세션 정보:', { 
-      user: session?.user?.email, 
-      role: session?.user?.role,
-      hasSession: !!session 
-    })
-    
-    if (!session || session.user.role !== "admin") {
-      console.log('관리자 권한 없음')
-      return NextResponse.json(
-        { error: "관리자 권한이 필요합니다" },
-        { status: 403 }
-      )
-    }
+    await requireAdmin()
+    console.log('관리자 권한 확인 완료')
 
     await prisma.galleryItem.delete({
       where: { id: params.id },
@@ -139,6 +121,13 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    if (error instanceof Error && error.message === "FORBIDDEN") {
+      return NextResponse.json(
+        { error: "관리자 권한이 필요합니다" },
+        { status: 403 }
+      )
+    }
+    
     console.error("갤러리 항목 삭제 오류:", error)
     return NextResponse.json(
       { 
