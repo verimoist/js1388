@@ -64,17 +64,7 @@ model Notice {
   author      User?    @relation("NoticeAuthor", fields: [authorId], references: [id])
 }
 
-model Press {
-  id        String   @id @default(cuid())
-  title     String
-  content   String   @db.Text
-  sourceUrl String?
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  String?
-  author    User?    @relation("PressAuthor", fields: [authorId], references: [id])
-}
+// Press 모델은 제거됨 - Notice 모델의 press 카테고리로 통합
 
 model GalleryItem {
   id          String   @id @default(cuid())
