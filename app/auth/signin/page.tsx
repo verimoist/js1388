@@ -5,25 +5,28 @@ import { useState } from "react"
 import { Github } from "lucide-react"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("doori1388@naver.com")
+  const [password, setPassword] = useState("admin123!")
   const [loading, setLoading] = useState(false)
 
-  const handleCredentialsLogin = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     
-    try {
-      await signIn("credentials", { 
-        email, 
-        password, 
-        callbackUrl: "/admin" 
-      })
-    } catch (error) {
-      console.error("Login error:", error)
-    } finally {
-      setLoading(false)
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+      callbackUrl: "/admin",
+    })
+    
+    if (res?.error) {
+      alert("로그인 실패: " + res.error)
+    } else {
+      window.location.href = "/admin"
     }
+    
+    setLoading(false)
   }
 
   const showAdminSignup = !!process.env.NEXT_PUBLIC_ADMIN_SIGNUP_ENABLED || !!process.env.NEXT_PUBLIC_HAS_ADMIN_TOKEN
@@ -63,7 +66,7 @@ export default function SignIn() {
           </div>
 
           {/* 이메일 로그인 */}
-          <form className="space-y-6" onSubmit={handleCredentialsLogin}>
+          <form className="space-y-6" onSubmit={onSubmit}>
             <div>
               <label htmlFor="email" className="sr-only">
                 이메일

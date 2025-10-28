@@ -1,20 +1,15 @@
-import { withAuth } from "next-auth/middleware"
+import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   callbacks: {
     authorized: ({ token, req }) => {
-      const isAdmin = req.nextUrl.pathname.startsWith("/admin")
-      if (!isAdmin) return true
-      
-      // @ts-ignore
-      const ok = token && 
-        token.role === "ADMIN" && 
-        token.adminApproved === true && 
-        token.status === "ACTIVE"
-      
-      return !!ok
-    }
-  }
-})
+      // /admin 이하만 ADMIN 허용
+      if (req.nextUrl.pathname.startsWith("/admin")) {
+        return token?.role === "ADMIN";
+      }
+      return true;
+    },
+  },
+});
 
-export const config = { matcher: ["/admin/:path*"] }
+export const config = { matcher: ["/admin/:path*"] };
