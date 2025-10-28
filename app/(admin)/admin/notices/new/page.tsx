@@ -64,19 +64,20 @@ export default function NewNoticePage() {
           continue
         }
 
-        // Vercel 제한사항 고려한 파일 크기 제한 (4MB)
-        const maxSize = 4 * 1024 * 1024 // 4MB (Vercel 무료 플랜 4.5MB 제한 고려)
+        // Vercel Blob 파일 크기 제한 (10MB)
+        const maxSize = 10 * 1024 * 1024 // 10MB
         console.log('파일 크기 검증:', file.size, 'bytes, 최대:', maxSize, 'bytes')
         
         if (file.size > maxSize) {
           console.error('파일 크기 초과:', file.name, file.size, 'bytes')
-          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)\nVercel 무료 플랜은 4MB까지 지원합니다.`)
+          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)\n최대 10MB까지 지원합니다.`)
           continue
         }
         
         console.log('FormData 생성 시작')
         const formData = new FormData()
         formData.append('file', file)
+        formData.append('folder', 'notice') // 공지사항 폴더
         console.log('FormData에 파일 추가 완료')
 
         console.log('API 호출 시작:', '/api/upload')

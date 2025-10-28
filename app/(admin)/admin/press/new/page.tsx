@@ -3,6 +3,19 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
+interface Attachment {
+  name: string
+  url: string
+  size: number
+  type: string
+}
+
+interface LinkItem {
+  title: string
+  url: string
+  description?: string
+}
+
 export default function NewPressPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -12,18 +25,82 @@ export default function NewPressPage() {
     sourceUrl: "",
     published: true,
   })
+  const [attachments, setAttachments] = useState<Attachment[]>([])
+  const [links, setLinks] = useState<LinkItem[]>([])
+  const [newLink, setNewLink] = useState({ title: "", url: "", description: "" })
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+
+    console.log('=== 보도자료 파일 업로드 시작 ===')
+    console.log('파일 수:', files.length)
+
+    for (const file of Array.from(files)) {
+      try {
+        console.log('파일 처리 시작:', {
+          name: file.name,
+          size: file.size,
+          type: file.type
+        })
+
+        // 파일 크기 제한 (10MB)
+        const maxSize = 10 * 1024 * 1024
+        if (file.size > maxSize) {
+          alert(`파일 크기가 너무 큽니다: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`)
+          continue
+        }
+
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('folder', 'press') // 보도자료 폴더
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          console.log('업로드 성공:', result)
+          const attachment: Attachment = {
+            name: result.originalName,
+            url: result.url,
+            size: result.size,
+            type: result.contentType
+          }
+          setAttachments(prev => [...prev, attachment])
+        } else {
+          const errorResult = await response.json()
+          console.error('업로드 실패:', errorResult)
+          alert(`파일 업로드 실패: ${file.name} - ${errorResult.error}`)
+        }
+      } catch (error) {
+        console.error('파일 업로드 오류:', error)
+        alert(`파일 업로드 오류: ${file.name}`)
+      }
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
+      const submitData = {
+        ...formData,
+        attachments: attachments.length > 0 ? attachments : undefined,
+        links: links.length > 0 ? links : undefined,
+      }
+      
+      console.log('보도자료 제출 데이터:', submitData)
+      
       const response = await fetch("/api/press", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       })
 
       console.log('응답 상태:', response.status)

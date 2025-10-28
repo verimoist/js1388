@@ -9,14 +9,15 @@ export default function DebugSystemPage() {
   const testFileUpload = async () => {
     setLoading(true)
     try {
-      console.log('파일 업로드 테스트 시작')
+      console.log('=== Vercel Blob 파일 업로드 테스트 시작 ===')
       
       // 실제 파일 생성 (영문 파일명으로 테스트)
-      const file = new File(["test file content"], "testfile.txt", { type: "text/plain" })
+      const file = new File(["test file content for Vercel Blob"], "testfile.txt", { type: "text/plain" })
       console.log('생성된 파일:', { name: file.name, size: file.size, type: file.type })
       
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('folder', 'notice') // 테스트용 폴더
       console.log('FormData 생성 완료')
 
       console.log('API 호출 시작')
