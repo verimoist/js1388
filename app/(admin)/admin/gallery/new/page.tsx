@@ -18,19 +18,28 @@ export default function NewGalleryPage() {
     setLoading(true)
 
     try {
+      const submitData = {
+        title: formData.title,
+        caption: formData.caption,
+        imageUrl: formData.imageUrl,
+        attachments: [] // 갤러리는 이미지 URL만 사용
+      }
+      
+      console.log('갤러리 제출 데이터:', submitData)
+
       const response = await fetch("/api/gallery", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       })
 
       if (response.ok) {
         router.push("/admin/gallery")
       } else {
         const error = await response.json()
-        alert(error.error || "갤러리 항목 생성에 실패했습니다.")
+        alert(`갤러리 항목 생성에 실패했습니다: ${error.error || "알 수 없는 오류"}\n상세: ${error.details || ''}`)
       }
     } catch (error) {
       console.error("Error creating gallery item:", error)

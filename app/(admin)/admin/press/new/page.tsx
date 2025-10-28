@@ -88,9 +88,12 @@ export default function NewPressPage() {
 
     try {
       const submitData = {
-        ...formData,
-        attachments: attachments.length > 0 ? attachments : undefined,
-        links: links.length > 0 ? links : undefined,
+        title: formData.title,
+        content: formData.content,
+        sourceUrl: formData.sourceUrl,
+        published: formData.published,
+        attachments: attachments,
+        links: links
       }
       
       console.log('보도자료 제출 데이터:', submitData)

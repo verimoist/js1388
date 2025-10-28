@@ -2,14 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { pressCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
-
-const createPressSchema = z.object({
-  title: z.string().min(1, "제목은 필수입니다"),
-  content: z.string().min(1, "내용은 필수입니다"),
-  sourceUrl: z.string().url().optional().or(z.literal("")),
-  published: z.boolean().default(true),
-})
 
 export async function GET(request: NextRequest) {
   try {
@@ -84,21 +78,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log('요청 데이터:', body)
     
-    const validatedData = createPressSchema.parse(body)
+    const validatedData = await pressCreateSchema.parseAsync(body)
     console.log('검증된 데이터:', validatedData)
 
     // 보도자료를 Notice 모델의 press 카테고리로 저장
-    const noticeData: any = {
+    const noticeData = {
       title: validatedData.title,
       content: validatedData.content,
-      category: 'press', // 보도자료는 press 카테고리
+      category: 'press' as const,
       published: validatedData.published,
       authorId: session.user.id,
+      attachments: validatedData.attachments,
+      links: validatedData.links
     }
 
     // sourceUrl이 있는 경우 links 필드에 추가
     if (validatedData.sourceUrl) {
-      noticeData.links = [{
+      noticeData.links = [...noticeData.links, {
         title: '원문 보기',
         url: validatedData.sourceUrl,
         description: '언론사 원문 링크'
@@ -120,8 +116,9 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       console.error("검증 오류:", error.issues)
+      const errorMessages = error.issues.map(issue => issue.message).join(", ")
       return NextResponse.json(
-        { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
+        { error: "입력 데이터가 올바르지 않습니다", details: errorMessages },
         { status: 400 }
       )
     }
@@ -129,8 +126,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         error: "보도자료 생성에 실패했습니다",
-        details: error instanceof Error ? error.message : '알 수 없는 오류',
-        stack: error instanceof Error ? error.stack : undefined
+        details: error instanceof Error ? error.message : '알 수 없는 오류'
       },
       { status: 500 }
     )

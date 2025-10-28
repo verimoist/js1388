@@ -97,10 +97,10 @@ export default function NewNoticePage() {
           const result = await response.json()
           console.log('업로드 성공:', result)
           const attachment: Attachment = {
-            name: result.name,
+            name: result.originalName,
             url: result.url,
             size: result.size,
-            type: result.type
+            type: result.contentType
           }
           setAttachments(prev => [...prev, attachment])
         } else {
@@ -136,9 +136,12 @@ export default function NewNoticePage() {
 
     try {
       const submitData = {
-        ...formData,
-        ...(attachments.length > 0 && { attachments }),
-        ...(links.length > 0 && { links }),
+        title: formData.title,
+        content: formData.content,
+        category: formData.category,
+        published: formData.published,
+        attachments: attachments,
+        links: links
       }
       
       console.log('제출할 데이터:', submitData)

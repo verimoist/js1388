@@ -2,25 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { noticeCreateSchema } from "@/lib/schemas"
 import { z } from "zod"
-
-const createNoticeSchema = z.object({
-  title: z.string().min(1, "제목은 필수입니다"),
-  content: z.string().min(1, "내용은 필수입니다"),
-  category: z.enum(["notice", "press"]).default("notice"),
-  published: z.boolean().default(true),
-  attachments: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    size: z.number(),
-    type: z.string()
-  })).optional().nullable(),
-  links: z.array(z.object({
-    title: z.string(),
-    url: z.string(),
-    description: z.string().optional()
-  })).optional().nullable(),
-})
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,25 +79,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log('요청 데이터:', body)
     
-    const validatedData = createNoticeSchema.parse(body)
+    const validatedData = await noticeCreateSchema.parseAsync(body)
     console.log('검증된 데이터:', validatedData)
 
-    const noticeData: any = {
+    const noticeData = {
       title: validatedData.title,
       content: validatedData.content,
       category: validatedData.category,
       published: validatedData.published,
       authorId: session.user.id,
-    }
-
-    // attachments와 links가 있는 경우에만 추가
-    if (validatedData.attachments && validatedData.attachments.length > 0) {
-      noticeData.attachments = validatedData.attachments
-      console.log('첨부파일 추가:', validatedData.attachments.length, '개')
-    }
-    if (validatedData.links && validatedData.links.length > 0) {
-      noticeData.links = validatedData.links
-      console.log('링크 추가:', validatedData.links.length, '개')
+      attachments: validatedData.attachments,
+      links: validatedData.links
     }
 
     console.log('데이터베이스 저장 시작:', noticeData)
@@ -131,8 +106,9 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       console.error("검증 오류:", error.issues)
+      const errorMessages = error.issues.map(issue => issue.message).join(", ")
       return NextResponse.json(
-        { error: "입력 데이터가 올바르지 않습니다", details: error.issues },
+        { error: "입력 데이터가 올바르지 않습니다", details: errorMessages },
         { status: 400 }
       )
     }
@@ -140,8 +116,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         error: "공지사항 생성에 실패했습니다",
-        details: error instanceof Error ? error.message : '알 수 없는 오류',
-        stack: error instanceof Error ? error.stack : undefined
+        details: error instanceof Error ? error.message : '알 수 없는 오류'
       },
       { status: 500 }
     )
