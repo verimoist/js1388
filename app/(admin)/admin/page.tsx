@@ -23,8 +23,8 @@ export default async function AdminDashboard() {
 
   // 통계 데이터 가져오기
   const [noticesCount, pressCount, galleryCount, resourcesCount] = await Promise.all([
-    prisma.notice.count(),
-    prisma.press.count(),
+    prisma.notice.count({ where: { category: 'notice' } }),
+    prisma.notice.count({ where: { category: 'press' } }),
     prisma.galleryItem.count(),
     prisma.resource.count(),
   ])

@@ -137,9 +137,10 @@ export default async function PressDetailPage({ params }: PressDetailPageProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 최신 보도자료 4개 표시 */}
             {await (async () => {
-              const relatedPress = await prisma.press.findMany({
+              const relatedPress = await prisma.notice.findMany({
                 where: { 
                   published: true,
+                  category: 'press',
                   id: { not: params.id }
                 },
                 orderBy: { createdAt: 'desc' },

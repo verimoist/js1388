@@ -18,7 +18,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   notices       Notice[] @relation("NoticeAuthor")
-  press         Press[]  @relation("PressAuthor")
 }
 
 model Account {
