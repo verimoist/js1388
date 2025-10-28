@@ -24,6 +24,7 @@ interface Notice {
   content: string
   category: string
   published: boolean
+  imageUrl?: string
   attachments?: Attachment[]
   links?: LinkItem[]
 }
@@ -37,6 +38,7 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
     content: "",
     category: "notice" as "notice" | "press",
     published: true,
+    imageUrl: "",
   })
   const [attachments, setAttachments] = useState<Attachment[]>([])
   const [links, setLinks] = useState<LinkItem[]>([])
@@ -54,6 +56,7 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
             content: notice.content,
             category: notice.category as "notice" | "press",
             published: notice.published,
+            imageUrl: notice.imageUrl || "",
           })
           setAttachments(notice.attachments || [])
           setLinks(notice.links || [])
@@ -100,7 +103,7 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
           continue
         }
         
-        // 공용 업로드 유틸 사용
+        // 공용 업로드 유틸 사용 - 폴더 명시적 전달
         const uploaded = await uploadToBlob(file, formData.category)
         
         const attachment: Attachment = {
@@ -147,12 +150,14 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
       )
 
       const submitData = {
+        id: params.id,
         title: formData.title,
         content: formData.content,
         category: formData.category,
         published: formData.published,
+        imageUrl: formData.imageUrl || undefined,
         attachments: finalAttachments,
-        links: links
+        links: links?.filter(Boolean) ?? []
       }
       
       console.log('수정할 데이터:', submitData)
@@ -231,17 +236,16 @@ export default function EditNoticePage({ params }: { params: { id: string } }) {
         </div>
 
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700">
-            내용 *
+          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+            대표 이미지 URL
           </label>
-          <textarea
-            id="content"
-            required
-            rows={10}
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+          <input
+            type="url"
+            id="imageUrl"
+            value={formData.imageUrl}
+            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="내용을 입력하세요"
+            placeholder="https://example.com/image.jpg"
           />
         </div>
 

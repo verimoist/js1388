@@ -5,6 +5,9 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 
+// 강제 동적 렌더링
+export const dynamic = 'force-dynamic'
+
 interface Press {
   id: string
   title: string

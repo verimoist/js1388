@@ -94,7 +94,7 @@ export default function EditPressPage() {
           continue
         }
         
-        // 공용 업로드 유틸 사용
+        // 공용 업로드 유틸 사용 - 폴더 명시적 전달
         const uploaded = await uploadToBlob(file, 'press')
         
         const attachment: Attachment = {
@@ -137,9 +137,10 @@ export default function EditPressPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          id: params.id,
           ...formData,
-          ...(attachments.length > 0 && { attachments }),
-          ...(links.length > 0 && { links }),
+          attachments: attachments,
+          links: links?.filter(Boolean) ?? []
         }),
       })
 
