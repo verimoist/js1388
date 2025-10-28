@@ -6,6 +6,32 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 
+// Naver Provider (NextAuth에서 공식 지원하지 않으므로 커스텀 구현)
+const NaverProvider = {
+  id: "naver",
+  name: "Naver",
+  type: "oauth",
+  version: "2.0",
+  scope: "name email",
+  params: {
+    grant_type: "authorization_code",
+  },
+  accessTokenUrl: "https://nid.naver.com/oauth2.0/token",
+  requestTokenUrl: "https://nid.naver.com/oauth2.0/token",
+  authorizationUrl: "https://nid.naver.com/oauth2.0/authorize?response_type=code",
+  profileUrl: "https://openapi.naver.com/v1/nid/me",
+  profile(profile: any) {
+    return {
+      id: profile.response.id,
+      name: profile.response.name,
+      email: profile.response.email,
+      image: profile.response.profile_image,
+    }
+  },
+  clientId: process.env.NAVER_CLIENT_ID,
+  clientSecret: process.env.NAVER_CLIENT_SECRET,
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -17,6 +43,7 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
+    NaverProvider as any,
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -75,8 +102,8 @@ export const authOptions: NextAuthOptions = {
         userRole: user.role 
       })
       
-      if (account?.provider === "github" || account?.provider === "google") {
-        // GitHub 또는 Google 로그인 시 관리자 권한 체크
+      if (account?.provider === "github" || account?.provider === "google" || account?.provider === "naver") {
+        // GitHub, Google, Naver 로그인 시 관리자 권한 체크
         const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
         const fallbackAdminEmail = process.env.ADMIN_EMAIL
         
