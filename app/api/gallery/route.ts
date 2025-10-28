@@ -12,13 +12,17 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1")
     const limit = parseInt(searchParams.get("limit") || "10")
 
+    const admin = searchParams.get("admin") === "1"
+    const where = admin ? {} : {} // 현재는 동일하지만 나중에 확장 가능
+
     const [galleryItems, total] = await Promise.all([
       prisma.galleryItem.findMany({
+        where,
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
-      prisma.galleryItem.count(),
+      prisma.galleryItem.count({ where }),
     ])
 
     return NextResponse.json({

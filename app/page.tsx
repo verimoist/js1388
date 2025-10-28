@@ -139,7 +139,7 @@ import Container from '@/components/ui/Container'
 export default async function HomePage() {
   // 캐시된 데이터 가져오기
   const noticesData = await getNotices(3)
-  const galleryData = await getGalleryItems(6)
+  const galleryData = await getGalleryItems({ limit: 6 })
 
   // NoticeList 컴포넌트에 맞는 형식으로 변환
   const notices = noticesData.map(notice => ({

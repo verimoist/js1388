@@ -54,10 +54,12 @@ export const getPressReleases = unstable_cache(
 
 // 갤러리 데이터 가져오기 (캐시 적용)
 export const getGalleryItems = unstable_cache(
-  async (limit?: number) => {
+  async (opts?: { limit?: number; includeHidden?: boolean }) => {
+    const where = opts?.includeHidden ? {} : {} // 현재는 필터 없음, 나중에 확장 가능
     return await prisma.galleryItem.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
-      take: limit
+      take: opts?.limit
     })
   },
   ['gallery'],
@@ -66,6 +68,12 @@ export const getGalleryItems = unstable_cache(
     revalidate: 60 // 1분 캐시
   }
 )
+
+// 갤러리 캐시 무효화
+export const invalidateGallery = () => {
+  const { revalidateTag } = require('next/cache')
+  revalidateTag('gallery')
+}
 
 // 자료실 데이터 가져오기 (캐시 적용)
 export const getResources = unstable_cache(

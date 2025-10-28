@@ -5,6 +5,10 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 
+// 임시: 캐시 문제 추적을 위한 강제 동적 렌더링
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface GalleryItem {
   id: string
   title: string
@@ -24,9 +28,14 @@ export default function GalleryPage() {
 
   const fetchGallery = async () => {
     try {
-      const response = await fetch("/api/gallery")
+      console.log('관리자 갤러리 데이터 요청 시작')
+      const response = await fetch("/api/gallery?admin=1")
       const data = await response.json()
-      setGallery(data.gallery || [])
+      console.log('API 응답:', data)
+      
+      // galleryItems로 변경 (API 응답 구조에 맞춤)
+      setGallery(data.galleryItems || [])
+      console.log('설정된 갤러리 데이터:', data.galleryItems?.length || 0, '개')
     } catch (error) {
       console.error("Error fetching gallery:", error)
     } finally {
@@ -86,6 +95,13 @@ export default function GalleryPage() {
         </div>
 
         <div className="p-6">
+          {/* 진단 메시지 추가 */}
+          {gallery.length === 0 && (
+            <div className="text-sm text-gray-500 mb-4">
+              현재 표시할 갤러리 항목이 없습니다 (admin mode). 필터 조건/DB 연결을 확인하세요.
+            </div>
+          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredGallery.map((item) => (
               <div key={item.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">

@@ -5,7 +5,7 @@ import Section from '../../components/ui/Section'
 import GalleryGrid from '../../components/GalleryGrid'
 import Button from '../../components/ui/Button'
 import { SITE } from '../../lib/site'
-import { prisma } from '../../lib/prisma'
+import { getGalleryItems } from '../../lib/data'
 
 export const metadata: Metadata = {
   title: `포토갤러리 - ${SITE.name}`,
@@ -39,10 +39,8 @@ const recentAlbums = [
 ]
 
 export default async function GalleryPage() {
-  // 실제 데이터베이스에서 갤러리 데이터 가져오기
-  const galleryData = await prisma.galleryItem.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
+  // lib/data.ts의 getGalleryItems 함수 사용
+  const galleryData = await getGalleryItems()
 
   // GalleryGrid 컴포넌트에 맞는 형식으로 변환
   const galleryItems = galleryData.map(item => ({
