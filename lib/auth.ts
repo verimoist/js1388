@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import GitHubProvider from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
@@ -11,6 +12,10 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
       name: "credentials",
@@ -70,8 +75,8 @@ export const authOptions: NextAuthOptions = {
         userRole: user.role 
       })
       
-      if (account?.provider === "github") {
-        // GitHub 로그인 시 관리자 권한 체크
+      if (account?.provider === "github" || account?.provider === "google") {
+        // GitHub 또는 Google 로그인 시 관리자 권한 체크
         const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || []
         const fallbackAdminEmail = process.env.ADMIN_EMAIL
         
@@ -87,7 +92,7 @@ export const authOptions: NextAuthOptions = {
               where: { email: user.email! },
               data: { role: "admin" }
             })
-            console.log("Admin role assigned to:", user.email)
+            console.log(`Admin role assigned to ${account.provider} user:`, user.email)
           } catch (error) {
             console.error("Error assigning admin role:", error)
           }
